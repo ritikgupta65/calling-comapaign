@@ -1,13 +1,32 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import Layout from "@/components/Layout";
+import Outbound from "./Outbound";
+import Inbound from "./Inbound";
+import Analytics from "./Analytics";
+import Settings from "./Settings";
 
 const Index = () => {
+  const [currentMode, setCurrentMode] = useState<"outbound" | "inbound" | "analytics" | "settings">("outbound");
+
+  const renderCurrentPage = () => {
+    switch (currentMode) {
+      case "outbound":
+        return <Outbound />;
+      case "inbound":
+        return <Inbound />;
+      case "analytics":
+        return <Analytics />;
+      case "settings":
+        return <Settings />;
+      default:
+        return <Outbound />;
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <Layout currentMode={currentMode} onModeChange={setCurrentMode}>
+      {renderCurrentPage()}
+    </Layout>
   );
 };
 
