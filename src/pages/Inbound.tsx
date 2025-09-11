@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Headphones, Clock, Users, PhoneForwarded, Play, Square, User } from "lucide-react";
+import { Headphones, Clock, Users, PhoneForwarded, Play, Square, User, Plus, X, Pause, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,11 +7,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import StatsCard from "@/components/dashboard/StatsCard";
+import { useNavigate } from "react-router-dom";
 
 export default function Inbound() {
+  const navigate = useNavigate();
   const [isReceptionActive, setIsReceptionActive] = useState(true);
-  const [selectedAssistant, setSelectedAssistant] = useState("customer-support");
-  const [selectedNumber, setSelectedNumber] = useState("main-line");
+  const [selectedAssistant, setSelectedAssistant] = useState("");
+  const [activeCampaigns, setActiveCampaigns] = useState([
+    {
+      id: "1",
+      assistant: "Customer Support Pro",
+      number: "+1 (555) 123-4567",
+      status: "active" as const
+    }
+  ]);
 
   const stats = [
     {
@@ -98,17 +107,35 @@ export default function Inbound() {
     }
   ];
 
-  const assistants = [
-    { id: "customer-support", name: "Customer Support Pro", type: "Support" },
-    { id: "sales-assistant", name: "Sales Assistant", type: "Sales" },
-    { id: "tech-support", name: "Technical Support", type: "Technical" }
-  ];
+  const availableAssistants = [
+    { id: "customer-support", name: "Customer Support Pro", type: "Support", number: "+1 (555) 123-4567" },
+    { id: "sales-assistant", name: "Sales Assistant", type: "Sales", number: "+1 (555) 987-6543" },
+    { id: "tech-support", name: "Technical Support", type: "Technical", number: "+1 (555) 456-7890" },
+    { id: "billing-support", name: "Billing Support", type: "Billing", number: "+1 (555) 234-5678" }
+  ].filter(assistant => !activeCampaigns.some(campaign => campaign.assistant === assistant.name));
 
-  const phoneNumbers = [
-    { id: "main-line", number: "+1 (555) 123-4567", label: "Main Line" },
-    { id: "support-line", number: "+1 (555) 987-6543", label: "Support Line" },
-    { id: "sales-line", number: "+1 (555) 456-7890", label: "Sales Line" }
-  ];
+  const handleNewCampaign = () => {
+    if (selectedAssistant) {
+      const assistant = availableAssistants.find(a => a.id === selectedAssistant);
+      if (assistant) {
+        setActiveCampaigns([...activeCampaigns, {
+          id: Date.now().toString(),
+          assistant: assistant.name,
+          number: assistant.number,
+          status: "active" as const
+        }]);
+        setSelectedAssistant("");
+      }
+    }
+  };
+
+  const handleRemoveCampaign = (campaignId: string) => {
+    setActiveCampaigns(activeCampaigns.filter(c => c.id !== campaignId));
+  };
+
+  const handleLiveReport = () => {
+    navigate("/live-report");
+  };
 
   return (
     <div className="space-y-8 animate-slide-up">
@@ -157,7 +184,7 @@ export default function Inbound() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Reception Toggle */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -170,109 +197,125 @@ export default function Inbound() {
             </div>
             <p className="text-sm text-muted-foreground">
               {isReceptionActive 
-                ? "AI receptionist is actively handling incoming calls"
-                : "Reception is paused - calls will go to voicemail"
+                ? "AI receptionist is actively handling incoming calls. All inbound campaigns are active."
+                : "Reception is paused - all inbound campaigns are inactive. Calls will go to voicemail."
               }
             </p>
           </div>
 
-          {/* Assistant Selection */}
-          <div className="space-y-2">
-            <Label>Active Assistant</Label>
-            <Select value={selectedAssistant} onValueChange={setSelectedAssistant}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {assistants.map((assistant) => (
-                  <SelectItem key={assistant.id} value={assistant.id}>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-success rounded-full" />
-                      <span>{assistant.name}</span>
-                      <Badge variant="outline" className="ml-2 text-xs">
-                        {assistant.type}
-                      </Badge>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Phone Number Selection */}
-          <div className="space-y-2">
-            <Label>Phone Number</Label>
-            <Select value={selectedNumber} onValueChange={setSelectedNumber}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {phoneNumbers.map((number) => (
-                  <SelectItem key={number.id} value={number.id}>
-                    <div>
-                      <p className="font-medium">{number.number}</p>
-                      <p className="text-xs text-muted-foreground">{number.label}</p>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          {/* New Campaign Setup */}
+          <div className="space-y-4">
+            <Label>Add New Inbound Campaign</Label>
+            <div className="flex space-x-2">
+              <Select value={selectedAssistant} onValueChange={setSelectedAssistant}>
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="Select assistant" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableAssistants.map((assistant) => (
+                    <SelectItem key={assistant.id} value={assistant.id}>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-success rounded-full" />
+                        <span>{assistant.name}</span>
+                        <Badge variant="outline" className="ml-2 text-xs">
+                          {assistant.type}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">{assistant.number}</p>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button 
+                onClick={handleNewCampaign} 
+                disabled={!selectedAssistant || !isReceptionActive}
+                className="btn-professional"
+              >
+                <Plus className="w-4 h-4 mr-1" />
+                New Campaign
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Each assistant will be assigned their dedicated phone number
+            </p>
           </div>
         </div>
       </Card>
 
-      {/* Live Calls */}
+      {/* Active Campaigns & Recent Calls */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Active Calls */}
+        {/* Active Inbound Campaigns */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold flex items-center">
-            <div className="w-3 h-3 bg-success rounded-full mr-2 animate-pulse" />
-            Live Calls ({liveCalls.length})
+            <div className={`w-3 h-3 rounded-full mr-2 ${isReceptionActive ? 'bg-success animate-pulse' : 'bg-muted'}`} />
+            Active Inbound Campaigns ({activeCampaigns.length})
           </h3>
           
-          <div className="space-y-4">
-            {liveCalls.map((call) => (
-              <Card key={call.id} className="p-4 card-premium">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-secondary rounded-lg flex items-center justify-center">
-                      <Headphones className="w-5 h-5 text-white" />
+          {activeCampaigns.length > 0 ? (
+            <div className="space-y-4">
+              {activeCampaigns.map((campaign) => (
+                <Card key={campaign.id} className="p-4 card-premium">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <Headphones className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-medium">{campaign.assistant}</p>
+                        <p className="text-sm text-muted-foreground">{campaign.number}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium">{call.caller}</p>
-                      <p className="text-sm text-muted-foreground">{call.region} • {call.duration}</p>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Badge 
+                        variant="outline" 
+                        className={
+                          isReceptionActive 
+                            ? "bg-success/10 text-success border-success/20"
+                            : "bg-muted/10 text-muted-foreground border-muted/20"
+                        }
+                      >
+                        {isReceptionActive ? "Active" : "Inactive"}
+                      </Badge>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-2">
-                    <Badge 
-                      variant="outline" 
-                      className={
-                        call.status === "Active" 
-                          ? "bg-success/10 text-success border-success/20"
-                          : "bg-warning/10 text-warning border-warning/20"
-                      }
+                    <Button variant="outline" size="sm" className="hover:bg-muted">
+                      <Pause className="w-4 h-4 mr-1" />
+                      Pause
+                    </Button>
+                    <Button variant="destructive" size="sm">
+                      <Square className="w-4 h-4 mr-1" />
+                      Stop
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={handleLiveReport} className="hover:bg-muted">
+                      <BarChart3 className="w-4 h-4 mr-1" />
+                      Live Report
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => handleRemoveCampaign(campaign.id)}
+                      className="text-destructive hover:bg-destructive/10"
                     >
-                      {call.status}
-                    </Badge>
-                    
-                    {call.status === "Handover Requested" && (
-                      <Button size="sm" className="btn-gradient">
-                        <User className="w-4 h-4 mr-1" />
-                        Accept
-                      </Button>
-                    )}
+                      <X className="w-4 h-4" />
+                    </Button>
                   </div>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <Card className="p-6 card-premium border-dashed border-muted">
+              <div className="text-center py-4">
+                <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Headphones className="w-6 h-6 text-muted-foreground" />
                 </div>
-                
-                <div className="bg-muted/50 rounded-lg p-3">
-                  <p className="text-sm text-muted-foreground italic">
-                    "{call.transcript}"
-                  </p>
-                </div>
-              </Card>
-            ))}
-          </div>
+                <h4 className="font-medium mb-1">No Active Campaigns</h4>
+                <p className="text-sm text-muted-foreground">Add an assistant to start receiving calls</p>
+              </div>
+            </Card>
+          )}
         </div>
 
         {/* Recent Calls */}

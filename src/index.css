@@ -162,33 +162,37 @@
 }
 
 @layer components {
-  /* Premium Button Variants */
-  .btn-gradient {
-    @apply bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-premium;
-    @apply hover:shadow-glow transition-all duration-300;
+  /* Professional Button Variants */
+  .btn-professional {
+    @apply bg-primary text-primary-foreground border-0;
+    @apply hover:bg-primary/90 transition-colors duration-200;
   }
   
-  .btn-hero {
-    @apply bg-gradient-to-r from-primary via-accent to-secondary text-primary-foreground;
-    @apply shadow-[var(--shadow-premium)] hover:shadow-[var(--shadow-glow)];
-    @apply transform hover:scale-105 transition-all duration-300;
+  .btn-professional-secondary {
+    @apply bg-secondary text-secondary-foreground border-0;
+    @apply hover:bg-secondary/90 transition-colors duration-200;
   }
   
-  .btn-ghost-premium {
-    @apply bg-transparent border border-primary/20 text-primary;
-    @apply hover:bg-primary/10 hover:border-primary/40 transition-all duration-300;
+  .btn-professional-success {
+    @apply bg-success text-success-foreground border-0;
+    @apply hover:bg-success/90 transition-colors duration-200;
+  }
+  
+  .btn-professional-destructive {
+    @apply bg-destructive text-destructive-foreground border-0;
+    @apply hover:bg-destructive/90 transition-colors duration-200;
   }
   
   /* Card Variants */
   .card-premium {
-    @apply bg-card border border-border/50 shadow-[var(--shadow-card)];
-    @apply hover:shadow-[var(--shadow-premium)] transition-all duration-300;
+    @apply bg-card border border-border/50;
+    @apply hover:shadow-sm transition-shadow duration-200;
     @apply backdrop-blur-sm;
   }
   
   .card-gradient {
     @apply bg-gradient-to-br from-card via-card to-primary/5;
-    @apply border border-primary/10 shadow-[var(--shadow-card)];
+    @apply border border-primary/10;
   }
   
   /* Text Gradients */
