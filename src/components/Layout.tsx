@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Phone, BarChart3, Settings, User, LogOut, Moon, Sun, Headphones, PhoneCall, History } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import { Phone, BarChart3, Settings, User, LogOut, Moon, Sun, Headphones, PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -22,7 +22,6 @@ interface LayoutProps {
 export default function Layout({ children, currentMode, onModeChange }: LayoutProps) {
   const [isDark, setIsDark] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
 
   const toggleTheme = () => {
     setIsDark(!isDark);
@@ -113,16 +112,6 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
               <div className="w-2 h-2 bg-success rounded-full mr-2 animate-pulse" />
               Online
             </Badge>
-
-            {/* History Button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => window.open('/history', '_blank')}
-              className="w-9 h-9 rounded-lg hover:bg-muted/80"
-            >
-              <History className="w-4 h-4" />
-            </Button>
 
             {/* Theme Toggle */}
             <Button

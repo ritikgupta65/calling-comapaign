@@ -217,24 +217,13 @@ export default function Inbound() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {inboundStats.map((stat, index) => (
             <Card key={stat.title} className="p-4 card-premium">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center space-x-3">
                 <div className="p-2 bg-secondary/10 rounded-lg">
                   <stat.icon className="w-5 h-5 text-secondary" />
                 </div>
-                <div className="text-right">
+                <div>
                   <p className="text-2xl font-bold">{stat.value}</p>
                   <p className="text-sm text-muted-foreground">{stat.title}</p>
-                </div>
-              </div>
-              <div className="h-8 mt-2">
-                <div className="h-full bg-gradient-to-r from-secondary/20 to-secondary/5 rounded flex items-end justify-between px-1">
-                  {[...Array(12)].map((_, i) => (
-                    <div 
-                      key={i} 
-                      className="w-1 bg-secondary/40 rounded-sm" 
-                      style={{ height: `${Math.random() * 60 + 20}%` }}
-                    />
-                  ))}
                 </div>
               </div>
             </Card>
