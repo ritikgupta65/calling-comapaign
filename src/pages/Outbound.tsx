@@ -5,7 +5,10 @@ import CampaignSetup from "@/components/outbound/CampaignSetup";
 
 export default function Outbound() {
   const [activeCampaign, setActiveCampaign] = useState({
+    id: "default-campaign",
     name: "Q4 Lead Generation",
+    assistant: "Sales Assistant Pro",
+    number: "+1 (555) 123-4567",
     total: 1250,
     completed: 342,
     pending: 756,

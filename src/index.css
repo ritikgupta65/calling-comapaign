@@ -183,29 +183,11 @@
     @apply hover:bg-destructive/90 transition-colors duration-200;
   }
 
-  /* Button hover fixes for all variants */
-  .hover\\:bg-muted:hover {
-    @apply bg-muted/80;
-  }
-  
-  .hover\\:bg-destructive\\/10:hover {
-    @apply bg-destructive/20;
-  }
-  
   /* Card Variants */
   .card-premium {
     @apply bg-card border border-border/50;
     @apply hover:shadow-sm transition-shadow duration-200;
     @apply backdrop-blur-sm;
-  }
-
-  /* Button hover fixes for all variants */
-  .hover\\:bg-muted:hover {
-    @apply bg-muted/80;
-  }
-  
-  .hover\\:bg-destructive\\/10:hover {
-    @apply bg-destructive/20;
   }
   
   .card-gradient {

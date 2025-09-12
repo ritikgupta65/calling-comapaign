@@ -189,7 +189,7 @@ export default function Inbound() {
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold">Inbound Analytics</h3>
           <div className="flex items-center space-x-3">
-            <DatePickerWithRange />
+            <div className="text-sm text-muted-foreground">Jan 20, 2024 - Feb 09, 2024</div>
             <Select defaultValue="all-assistants">
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="All Assistants" />
