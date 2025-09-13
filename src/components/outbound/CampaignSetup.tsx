@@ -129,50 +129,133 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
         )}
       </div>
 
-      {/* Analytics Section */}
+
+      {/* New Campaign Setup Form */}
       <Card className="p-6 card-premium">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold">Outbound Analytics</h3>
-          <div className="flex items-center space-x-3">
-            <div className="text-sm text-muted-foreground">Jan 20, 2024 - Feb 09, 2024</div>
-            <Select defaultValue="all-assistants">
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="All Assistants" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all-assistants">All Assistants</SelectItem>
-                {assistants.map((assistant) => (
-                  <SelectItem key={assistant.id} value={assistant.id}>
-                    {assistant.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button variant="outline" size="sm">
-              <Filter className="w-4 h-4 mr-2" />
-              Filters
-            </Button>
-            <Button variant="outline" size="sm">
-              <Download className="w-4 h-4 mr-2" />
-              Export
-            </Button>
+        <div className="flex items-center space-x-3 mb-6">
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <Play className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold">New Campaign Setup</h3>
+            <p className="text-sm text-muted-foreground">Configure your AI calling campaign</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {outboundStats.map((stat, index) => (
-            <Card key={stat.title} className="p-4 card-premium">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <stat.icon className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stat.value}</p>
-                  <p className="text-sm text-muted-foreground">{stat.title}</p>
-                </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Column */}
+          <div className="space-y-6">
+            {/* Campaign Name */}
+            <div className="space-y-2">
+              <Label htmlFor="campaign-name">Campaign Name</Label>
+              <Input
+                id="campaign-name"
+                placeholder="e.g., Q4 Lead Generation"
+                value={campaignName}
+                onChange={(e) => setCampaignName(e.target.value)}
+                className="transition-all duration-300"
+              />
+            </div>
+
+            {/* CSV Upload */}
+            <div className="space-y-2">
+              <Label>Contact List (CSV)</Label>
+              <div
+                className={`
+                  border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 cursor-pointer
+                  ${isDragOver ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}
+                `}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDragOver(true);
+                }}
+                onDragLeave={() => setIsDragOver(false)}
+                onDrop={handleDrop}
+                onClick={() => document.getElementById('file-upload')?.click()}
+              >
+                <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                {selectedFile ? (
+                  <div>
+                    <p className="font-medium text-success">{selectedFile.name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {(selectedFile.size / 1024).toFixed(1)} KB • Ready to upload
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="font-medium">Drop your CSV file here</p>
+                    <p className="text-sm text-muted-foreground">or click to browse</p>
+                  </div>
+                )}
               </div>
-            </Card>
-          ))}
+              <input
+                id="file-upload"
+                type="file"
+                accept=".csv"
+                className="hidden"
+                onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
+              />
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-6">
+            {/* Assistant Selection */}
+            <div className="space-y-2">
+              <Label>AI Assistant</Label>
+              <Select value={selectedAssistant} onValueChange={setSelectedAssistant}>
+                <SelectTrigger className="transition-all duration-300">
+                  <SelectValue placeholder="Choose an assistant" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableAssistants.map((assistant) => (
+                    <SelectItem key={assistant.id} value={assistant.id}>
+                      <div className="flex items-center space-x-3">
+                        <Bot className="w-4 h-4 text-primary" />
+                        <div>
+                          <p className="font-medium">{assistant.name}</p>
+                          <p className="text-xs text-muted-foreground">{assistant.type} • {assistant.number}</p>
+                        </div>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {availableAssistants.length === 0 && (
+                <p className="text-xs text-muted-foreground">All assistants are currently assigned to active campaigns</p>
+              )}
+            </div>
+
+            {/* Parallel Calls */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label>Parallel Calls</Label>
+                <span className="text-sm font-medium">{parallelCalls[0]}</span>
+              </div>
+              <Slider
+                value={parallelCalls}
+                onValueChange={setParallelCalls}
+                max={10}
+                min={1}
+                step={1}
+                className="w-full"
+              />
+              <p className="text-xs text-muted-foreground">
+                Number of simultaneous calls to make
+              </p>
+            </div>
+
+            {/* Start Campaign Button */}
+            <Button 
+              onClick={handleStartCampaign}
+              disabled={!campaignName || !selectedFile || !selectedAssistant}
+              className="w-full btn-professional"
+              size="lg"
+            >
+              <Play className="w-5 h-5 mr-2" />
+              Start Campaign
+            </Button>
+          </div>
         </div>
       </Card>
 
@@ -309,141 +392,6 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
           </div>
         </Card>
       )}
-
-      {/* Campaign Setup Form */}
-      <Card className="p-6 card-premium">
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Play className="w-5 h-5 text-primary" />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold">New Campaign Setup</h3>
-            <p className="text-sm text-muted-foreground">Configure your AI calling campaign</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left Column */}
-          <div className="space-y-6">
-            {/* Campaign Name */}
-            <div className="space-y-2">
-              <Label htmlFor="campaign-name">Campaign Name</Label>
-              <Input
-                id="campaign-name"
-                placeholder="e.g., Q4 Lead Generation"
-                value={campaignName}
-                onChange={(e) => setCampaignName(e.target.value)}
-                className="transition-all duration-300"
-              />
-            </div>
-
-            {/* CSV Upload */}
-            <div className="space-y-2">
-              <Label>Contact List (CSV)</Label>
-              <div
-                className={`
-                  border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 cursor-pointer
-                  ${isDragOver ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}
-                `}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  setIsDragOver(true);
-                }}
-                onDragLeave={() => setIsDragOver(false)}
-                onDrop={handleDrop}
-                onClick={() => document.getElementById('file-upload')?.click()}
-              >
-                <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                {selectedFile ? (
-                  <div>
-                    <p className="font-medium text-success">{selectedFile.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {(selectedFile.size / 1024).toFixed(1)} KB • Ready to upload
-                    </p>
-                  </div>
-                ) : (
-                  <div>
-                    <p className="font-medium">Drop your CSV file here</p>
-                    <p className="text-sm text-muted-foreground">or click to browse</p>
-                  </div>
-                )}
-              </div>
-              <input
-                id="file-upload"
-                type="file"
-                accept=".csv"
-                className="hidden"
-                onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
-              />
-            </div>
-          </div>
-
-          {/* Right Column */}
-          <div className="space-y-6">
-            {/* Assistant Selection */}
-            <div className="space-y-2">
-              <Label>AI Assistant</Label>
-              <Select value={selectedAssistant} onValueChange={setSelectedAssistant}>
-                <SelectTrigger className="transition-all duration-300">
-                  <SelectValue placeholder="Choose an assistant" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableAssistants.map((assistant) => (
-                    <SelectItem key={assistant.id} value={assistant.id}>
-                      <div className="flex items-center space-x-3">
-                        <Bot className="w-4 h-4 text-primary" />
-                        <div>
-                          <p className="font-medium">{assistant.name}</p>
-                          <p className="text-xs text-muted-foreground">{assistant.type} • {assistant.number}</p>
-                        </div>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {availableAssistants.length === 0 && (
-                <p className="text-xs text-muted-foreground">All assistants are currently assigned to active campaigns</p>
-              )}
-            </div>
-
-            {/* Parallel Calls */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Label>Parallel Calls</Label>
-                <Badge variant="outline">{parallelCalls[0]} concurrent</Badge>
-              </div>
-              <Slider
-                value={parallelCalls}
-                onValueChange={setParallelCalls}
-                max={10}
-                min={1}
-                step={1}
-                className="transition-all duration-300"
-              />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>Conservative (1)</span>
-                <span>Aggressive (10)</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex items-center justify-end space-x-3 mt-8 pt-6 border-t border-border/50">
-          <Button variant="outline">
-            <Settings className="w-4 h-4 mr-2" />
-            Advanced Settings
-          </Button>
-          <Button 
-            onClick={handleStartCampaign}
-            disabled={!campaignName || !selectedFile || !selectedAssistant}
-            className="btn-professional"
-          >
-            <Play className="w-4 h-4 mr-2" />
-            Start Campaign
-          </Button>
-        </div>
-      </Card>
     </div>
   );
 }

@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { Phone, TrendingUp, Users, AlertTriangle, PhoneCall } from "lucide-react";
+import { Phone, TrendingUp, Users, AlertTriangle, PhoneCall, Filter, Download } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import StatsCard from "@/components/dashboard/StatsCard";
 import CampaignSetup from "@/components/outbound/CampaignSetup";
 
@@ -52,16 +55,51 @@ export default function Outbound() {
     }
   ];
 
+  const additionalStats = [
+    { title: "Total Cost", value: "$162.35", icon: Users },
+    { title: "Avg. Duration", value: "3m 45s", icon: AlertTriangle }
+  ];
+
+  const allStats = [...stats, ...additionalStats];
+
   return (
     <div className="space-y-8 animate-slide-up">
-      {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
-          <div key={stat.title} style={{ animationDelay: `${index * 100}ms` }} className="animate-slide-up">
-            <StatsCard {...stat} />
+      {/* Analytics Section */}
+      <Card className="p-6 card-premium">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold">Outbound Analytics</h3>
+          <div className="flex items-center space-x-3">
+            <div className="text-sm text-muted-foreground">Jan 20, 2024 - Feb 09, 2024</div>
+            <Select defaultValue="all-assistants">
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="All Assistants" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all-assistants">All Assistants</SelectItem>
+                <SelectItem value="sales-pro">Sales Assistant Pro</SelectItem>
+                <SelectItem value="customer-support">Customer Support</SelectItem>
+                <SelectItem value="lead-qualifier">Lead Qualifier</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button variant="outline" size="sm">
+              <Filter className="w-4 h-4 mr-2" />
+              Filters
+            </Button>
+            <Button variant="outline" size="sm">
+              <Download className="w-4 h-4 mr-2" />
+              Export
+            </Button>
           </div>
-        ))}
-      </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {allStats.map((stat, index) => (
+            <div key={stat.title} style={{ animationDelay: `${index * 100}ms` }} className="animate-slide-up">
+              <StatsCard {...stat} />
+            </div>
+          ))}
+        </div>
+      </Card>
 
       {/* Campaign Setup & Management */}
       <CampaignSetup 
