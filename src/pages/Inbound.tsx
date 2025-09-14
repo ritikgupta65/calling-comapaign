@@ -213,14 +213,16 @@ export default function Inbound() {
           ))}
           {inboundStats.map((stat, index) => (
             <div key={stat.title} style={{ animationDelay: `${(index + 4) * 100}ms` }} className="animate-slide-up">
-              <Card className="p-4 card-premium h-[120px] flex items-center">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-secondary/10 rounded-lg">
-                    <stat.icon className="w-5 h-5 text-secondary" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold">{stat.value}</p>
-                    <p className="text-sm text-muted-foreground">{stat.title}</p>
+              <Card className="p-4 card-premium h-[120px]">
+                <div className="flex items-center justify-between h-full">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 bg-secondary/10 rounded-lg">
+                      <stat.icon className="w-5 h-5 text-secondary" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold">{stat.value}</p>
+                      <p className="text-sm text-muted-foreground">{stat.title}</p>
+                    </div>
                   </div>
                 </div>
               </Card>
