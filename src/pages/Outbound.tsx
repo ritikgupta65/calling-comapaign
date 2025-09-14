@@ -3,6 +3,7 @@ import { Phone, TrendingUp, Users, AlertTriangle, PhoneCall, Filter, Download } 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import StatsCard from "@/components/dashboard/StatsCard";
 import CampaignSetup from "@/components/outbound/CampaignSetup";
 
@@ -69,7 +70,7 @@ export default function Outbound() {
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold">Outbound Analytics</h3>
           <div className="flex items-center space-x-3">
-            <div className="text-sm text-muted-foreground">Jan 20, 2024 - Feb 09, 2024</div>
+            <DatePickerWithRange />
             <Select defaultValue="all-assistants">
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="All Assistants" />

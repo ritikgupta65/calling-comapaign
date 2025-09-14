@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import { useNavigate } from "react-router-dom";
 
 export default function History() {
@@ -251,6 +252,7 @@ export default function History() {
         </div>
         
         <div className="flex items-center space-x-3">
+          <DatePickerWithRange />
           <Select defaultValue="all-campaigns">
             <SelectTrigger className="w-40">
               <SelectValue placeholder="All Campaigns" />
@@ -262,8 +264,8 @@ export default function History() {
             </SelectContent>
           </Select>
           <Button variant="outline" size="sm">
-            <Calendar className="w-4 h-4 mr-2" />
-            Date Range
+            <Filter className="w-4 h-4 mr-2" />
+            Filters
           </Button>
           <Button variant="outline" size="sm">
             <Download className="w-4 h-4 mr-2" />

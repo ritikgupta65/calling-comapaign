@@ -180,7 +180,7 @@ export default function Inbound() {
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold">Inbound Analytics</h3>
           <div className="flex items-center space-x-3">
-            <div className="text-sm text-muted-foreground">Jan 20, 2024 - Feb 09, 2024</div>
+            <DatePickerWithRange />
             <Select defaultValue="all-assistants">
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="All Assistants" />
@@ -208,7 +208,9 @@ export default function Inbound() {
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-8 gap-4">
           {stats.map((stat, index) => (
             <div key={stat.title} style={{ animationDelay: `${index * 100}ms` }} className="animate-slide-up">
-              <StatsCard {...stat} />
+              <div className="h-[120px]">
+                <StatsCard {...stat} />
+              </div>
             </div>
           ))}
           {inboundStats.map((stat, index) => (
