@@ -134,20 +134,20 @@ export default function History() {
 
   if (selectedCampaign) {
     return (
-      <div className="space-y-6 animate-slide-up">
+      <div className="p-6 mx-4 space-y-8 animate-slide-up">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-between mb-8 px-4">
+          <div className="flex items-center space-x-6">
             <Button 
               variant="ghost" 
               size="sm"
               onClick={() => setSelectedCampaign(null)}
-              className="hover:bg-muted"
+              className="hover:bg-muted px-4 py-2"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Campaigns
             </Button>
-            <div>
+            <div className="space-y-2">
               <h2 className="text-2xl font-bold font-poppins text-gradient-primary">
                 {selectedCampaign.name} - Call Logs
               </h2>
@@ -180,71 +180,73 @@ export default function History() {
         </div>
 
         {/* Call Logs Table */}
-        <Card className="p-6 card-premium">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Phone Number</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Assistant</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">End Reason</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Success</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Start Time</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Duration</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Cost</th>
-                </tr>
-              </thead>
-              <tbody>
-                {callLogs.map((call) => (
-                  <tr key={call.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                    <td className="py-3 px-4">
-                      <div className="flex items-center space-x-2">
-                        <Phone className="w-4 h-4 text-muted-foreground" />
-                        <span className="font-mono">{call.number}</span>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center space-x-2">
-                        <User className="w-4 h-4 text-primary" />
-                        <span>{call.assistantName}</span>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className="text-sm">{call.endReason}</span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center space-x-2">
-                        {getSuccessIcon(call.successEvaluation)}
-                        <span className="text-sm">{call.successEvaluation}</span>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center space-x-2">
-                        <Clock className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm font-mono">{call.startTime}</span>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className="text-sm font-mono">{call.duration}</span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className="text-sm font-medium text-primary">{call.cost}</span>
-                    </td>
+        <div className="px-4">
+          <Card className="p-8 card-premium">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-4 px-6 font-medium text-muted-foreground">Phone Number</th>
+                    <th className="text-left py-4 px-6 font-medium text-muted-foreground">Assistant</th>
+                    <th className="text-left py-4 px-6 font-medium text-muted-foreground">End Reason</th>
+                    <th className="text-left py-4 px-6 font-medium text-muted-foreground">Success</th>
+                    <th className="text-left py-4 px-6 font-medium text-muted-foreground">Start Time</th>
+                    <th className="text-left py-4 px-6 font-medium text-muted-foreground">Duration</th>
+                    <th className="text-left py-4 px-6 font-medium text-muted-foreground">Cost</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
+                </thead>
+                <tbody>
+                  {callLogs.map((call) => (
+                    <tr key={call.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                      <td className="py-4 px-6">
+                        <div className="flex items-center space-x-3">
+                          <Phone className="w-4 h-4 text-muted-foreground" />
+                          <span className="font-mono">{call.number}</span>
+                        </div>
+                      </td>
+                      <td className="py-4 px-6">
+                        <div className="flex items-center space-x-3">
+                          <User className="w-4 h-4 text-primary" />
+                          <span>{call.assistantName}</span>
+                        </div>
+                      </td>
+                      <td className="py-4 px-6">
+                        <span className="text-sm">{call.endReason}</span>
+                      </td>
+                      <td className="py-4 px-6">
+                        <div className="flex items-center space-x-3">
+                          {getSuccessIcon(call.successEvaluation)}
+                          <span className="text-sm">{call.successEvaluation}</span>
+                        </div>
+                      </td>
+                      <td className="py-4 px-6">
+                        <div className="flex items-center space-x-3">
+                          <Clock className="w-4 h-4 text-muted-foreground" />
+                          <span className="text-sm font-mono">{call.startTime}</span>
+                        </div>
+                      </td>
+                      <td className="py-4 px-6">
+                        <span className="text-sm font-mono">{call.duration}</span>
+                      </td>
+                      <td className="py-4 px-6">
+                        <span className="text-sm font-medium text-primary">{call.cost}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 animate-slide-up">
+    <div className="p-6 mx-4 space-y-8 animate-slide-up">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex items-center justify-between mb-8 px-4">
+        <div className="space-y-2">
           <h2 className="text-2xl font-bold font-poppins text-gradient-primary">
             Campaign History
           </h2>
@@ -275,28 +277,30 @@ export default function History() {
       </div>
 
       {/* Campaign Lists */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-4">
         {/* Outbound Campaigns */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold flex items-center">
-            <Phone className="w-5 h-5 mr-2 text-primary" />
-            Outbound Campaigns ({outboundCampaigns.length})
-          </h3>
+        <div className="space-y-6">
+          <div className="px-2">
+            <h3 className="text-lg font-semibold flex items-center mb-4">
+              <Phone className="w-5 h-5 mr-2 text-primary" />
+              Outbound Campaigns ({outboundCampaigns.length})
+            </h3>
+          </div>
           
           <div className="space-y-4">
             {outboundCampaigns.map((campaign) => (
               <Card 
                 key={campaign.id} 
-                className="p-4 card-premium hover:shadow-glow transition-all duration-300 cursor-pointer"
+                className="p-6 m-2 card-premium hover:shadow-glow transition-all duration-300 cursor-pointer"
                 onClick={() => handleCampaignClick(campaign)}
               >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                      <Phone className="w-5 h-5 text-primary" />
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <Phone className="w-6 h-6 text-primary" />
                     </div>
-                    <div>
-                      <p className="font-medium">{campaign.name}</p>
+                    <div className="space-y-1">
+                      <p className="font-medium text-base">{campaign.name}</p>
                       <p className="text-sm text-muted-foreground">{campaign.assistant}</p>
                     </div>
                   </div>
@@ -304,18 +308,18 @@ export default function History() {
                   {getStatusBadge(campaign.status)}
                 </div>
                 
-                <div className="grid grid-cols-3 gap-4 text-sm">
-                  <div>
+                <div className="grid grid-cols-3 gap-6 text-sm pt-3">
+                  <div className="space-y-1">
                     <p className="text-muted-foreground">Total Calls</p>
-                    <p className="font-medium">{campaign.totalCalls}</p>
+                    <p className="font-medium text-base">{campaign.totalCalls}</p>
                   </div>
-                  <div>
+                  <div className="space-y-1">
                     <p className="text-muted-foreground">Success Rate</p>
-                    <p className="font-medium">{campaign.successRate}</p>
+                    <p className="font-medium text-base">{campaign.successRate}</p>
                   </div>
-                  <div>
+                  <div className="space-y-1">
                     <p className="text-muted-foreground">Date</p>
-                    <p className="font-medium">{campaign.date}</p>
+                    <p className="font-medium text-base">{campaign.date}</p>
                   </div>
                 </div>
               </Card>
@@ -324,26 +328,28 @@ export default function History() {
         </div>
 
         {/* Inbound Campaigns */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold flex items-center">
-            <Headphones className="w-5 h-5 mr-2 text-secondary" />
-            Inbound Campaigns ({inboundCampaigns.length})
-          </h3>
+        <div className="space-y-6">
+          <div className="px-2">
+            <h3 className="text-lg font-semibold flex items-center mb-4">
+              <Headphones className="w-5 h-5 mr-2 text-secondary" />
+              Inbound Campaigns ({inboundCampaigns.length})
+            </h3>
+          </div>
           
           <div className="space-y-4">
             {inboundCampaigns.map((campaign) => (
               <Card 
                 key={campaign.id} 
-                className="p-4 card-premium hover:shadow-glow transition-all duration-300 cursor-pointer"
+                className="p-6 m-2 card-premium hover:shadow-glow transition-all duration-300 cursor-pointer"
                 onClick={() => handleCampaignClick(campaign)}
               >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center">
-                      <Headphones className="w-5 h-5 text-secondary" />
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
+                      <Headphones className="w-6 h-6 text-secondary" />
                     </div>
-                    <div>
-                      <p className="font-medium">{campaign.name}</p>
+                    <div className="space-y-1">
+                      <p className="font-medium text-base">{campaign.name}</p>
                       <p className="text-sm text-muted-foreground">{campaign.assistant}</p>
                     </div>
                   </div>
@@ -351,18 +357,18 @@ export default function History() {
                   {getStatusBadge(campaign.status)}
                 </div>
                 
-                <div className="grid grid-cols-3 gap-4 text-sm">
-                  <div>
+                <div className="grid grid-cols-3 gap-6 text-sm pt-3">
+                  <div className="space-y-1">
                     <p className="text-muted-foreground">Total Calls</p>
-                    <p className="font-medium">{campaign.totalCalls}</p>
+                    <p className="font-medium text-base">{campaign.totalCalls}</p>
                   </div>
-                  <div>
+                  <div className="space-y-1">
                     <p className="text-muted-foreground">Success Rate</p>
-                    <p className="font-medium">{campaign.successRate}</p>
+                    <p className="font-medium text-base">{campaign.successRate}</p>
                   </div>
-                  <div>
+                  <div className="space-y-1">
                     <p className="text-muted-foreground">Date</p>
-                    <p className="font-medium">{campaign.date}</p>
+                    <p className="font-medium text-base">{campaign.date}</p>
                   </div>
                 </div>
               </Card>
