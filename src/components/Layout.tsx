@@ -118,7 +118,7 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => window.open('/history', '_blank')}
+              onClick={() => navigate('/history')}
               className="w-9 h-9 rounded-lg hover:bg-muted/80"
             >
               <History className="w-4 h-4" />
