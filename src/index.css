@@ -158,6 +158,7 @@
 
   body {
     @apply bg-background text-foreground font-inter antialiased;
+    padding: 20px;
   }
 }
 
@@ -181,6 +182,223 @@
   .btn-professional-destructive {
     @apply bg-destructive text-destructive-foreground border-0;
     @apply hover:bg-destructive/90 transition-colors duration-200;
+  }
+  
+  .btn-professional-outline {
+    @apply bg-transparent text-foreground border-2 border-border;
+    @apply hover:bg-accent hover:text-accent-foreground hover:border-primary transition-all duration-200;
+  }
+  
+  .btn-professional-ghost {
+    @apply bg-transparent text-foreground border-0;
+    @apply hover:bg-accent hover:text-accent-foreground transition-colors duration-200;
+  }
+  
+  .btn-professional-pause {
+    @apply bg-transparent text-amber-600 border-2 border-amber-500;
+    @apply hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all duration-200;
+  }
+  
+  .btn-professional-pause.clicked {
+    @apply bg-amber-600 text-white border-amber-600 transform scale-95;
+    animation: buttonPulse 0.2s ease-out;
+  }
+  
+  .btn-professional-stop {
+    @apply bg-transparent text-red-500 border-2 border-red-500;
+    @apply hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-200;
+  }
+  
+  .btn-professional-stop.clicked {
+    @apply bg-red-600 text-white border-red-600 transform scale-95;
+    animation: buttonPulse 0.2s ease-out;
+  }
+  
+  .btn-professional-resume {
+    @apply bg-transparent text-emerald-600 border-2 border-emerald-500;
+    @apply hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all duration-200;
+  }
+  
+  .btn-professional-resume.clicked {
+    @apply bg-emerald-600 text-white border-emerald-600 transform scale-95;
+    animation: buttonPulse 0.2s ease-out;
+  }
+  
+  /* Dynamic Button Color System */
+  .btn-state-blue {
+    background-color: transparent !important;
+    color: #007BFF !important;
+    border: 2px solid #007BFF !important;
+    transition: all 0.2s ease !important;
+  }
+  
+  .btn-state-blue:hover {
+    background-color: #007BFF !important;
+    color: white !important;
+    border-color: #007BFF !important;
+  }
+  
+  .btn-state-red {
+    background-color: transparent !important;
+    color: #DC3545 !important;
+    border: 2px solid #DC3545 !important;
+    transition: all 0.2s ease !important;
+  }
+  
+  .btn-state-red:hover {
+    background-color: #DC3545 !important;
+    color: white !important;
+    border-color: #DC3545 !important;
+  }
+  
+  .btn-state-orange {
+    background-color: transparent !important;
+    color: #FD7E14 !important;
+    border: 2px solid #FD7E14 !important;
+    transition: all 0.2s ease !important;
+  }
+  
+  .btn-state-orange:hover {
+    background-color: #FD7E14 !important;
+    color: white !important;
+    border-color: #FD7E14 !important;
+  }
+  
+  .btn-state-green {
+    background-color: transparent !important;
+    color: #28A745 !important;
+    border: 2px solid #28A745 !important;
+    transition: all 0.2s ease !important;
+  }
+  
+  .btn-state-green:hover {
+    background-color: #28A745 !important;
+    color: white !important;
+    border-color: #28A745 !important;
+  }
+  
+  .btn-state-grey {
+    background-color: transparent !important;
+    color: #6C757D !important;
+    border: 2px solid #6C757D !important;
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+    pointer-events: none !important;
+    transition: all 0.2s ease !important;
+  }
+  
+  .btn-clicked {
+    transform: scale(0.95) !important;
+    animation: buttonPulse 0.2s ease-out;
+  }
+  
+  @keyframes buttonPulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+    50% { transform: scale(0.95); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+  }
+
+  /* Consistent Live Button Style for all action buttons */
+  .btn-action-primary {
+    background-color: transparent !important;
+    color: #007BFF !important;
+    border: 2px solid #007BFF !important;
+    transition: all 0.2s ease !important;
+    font-weight: 500 !important;
+    border-radius: 0.5rem !important;
+    padding: 0.5rem 1rem !important;
+  }
+  
+  .btn-action-primary:hover {
+    background-color: #007BFF !important;
+    color: white !important;
+    border-color: #007BFF !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+  }
+  
+  .btn-action-primary:active {
+    transform: translateY(0) scale(0.98) !important;
+    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3) !important;
+  }
+  
+  .btn-action-primary:disabled {
+    background-color: transparent !important;
+    color: #6C757D !important;
+    border-color: #6C757D !important;
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  
+  .btn-action-primary:disabled:hover {
+    background-color: transparent !important;
+    color: #6C757D !important;
+    border-color: #6C757D !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Custom Filter Component Styles */
+  .filter-select-trigger {
+    background-color: transparent !important;
+    color: #007BFF !important;
+    border: 2px solid #007BFF !important;
+    transition: all 0.2s ease !important;
+    font-weight: 500 !important;
+    border-radius: 0.5rem !important;
+    padding: 0.5rem 1rem !important;
+  }
+  
+  .filter-select-trigger:hover {
+    background-color: #007BFF !important;
+    color: white !important;
+    border-color: #007BFF !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+  }
+  
+  .filter-select-trigger:focus {
+    background-color: #007BFF !important;
+    color: white !important;
+    border-color: #007BFF !important;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+  }
+
+  .filter-date-picker {
+    background-color: transparent !important;
+    color: #007BFF !important;
+    border: 2px solid #007BFF !important;
+    transition: all 0.2s ease !important;
+    font-weight: 500 !important;
+    border-radius: 0.5rem !important;
+    padding: 0.5rem 1rem !important;
+  }
+  
+  .filter-date-picker:hover {
+    background-color: #007BFF !important;
+    color: white !important;
+    border-color: #007BFF !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+  }
+  
+  .filter-date-picker:focus {
+    background-color: #007BFF !important;
+    color: white !important;
+    border-color: #007BFF !important;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+  }
+  
+  .btn-professional-report {
+    @apply bg-transparent text-blue-600 border-2 border-blue-600;
+    @apply hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all duration-200;
+  }
+  
+  .btn-professional-report.clicked {
+    @apply bg-blue-700 text-white border-blue-700 transform scale-95;
+    animation: buttonPulse 0.2s ease-out;
   }
 
   /* Card Variants */
@@ -283,4 +501,18 @@
     content: '';
     @apply absolute inset-[1px] bg-background rounded-lg;
   }
+}
+.btn-professional-pause {
+  border-color: #091b85;
+}
+.btn-professional-stop {
+  border-color: #091b85;
+}
+.bg-muted\/50 {
+    background-color: hsl(var(--muted) / 0.5);
+    border: 1px solid #091b85;
+}
+
+.border {
+    border: 1px solid #091b85a8;
 }

@@ -31,34 +31,54 @@ export default function Outbound() {
       value: 1250,
       change: { value: "+12% from last week", type: "increase" as const },
       icon: PhoneCall,
-      gradient: "from-primary to-accent"
+      gradient: "from-primary to-accent",
+      iconStyle: "bordered" as const,
+      iconColor: "text-blue-500"
     },
     {
       title: "Connected",
       value: 342,
       change: { value: "+8% from last week", type: "increase" as const },
       icon: Phone,
-      gradient: "from-success to-success/80"
+      gradient: "from-success to-success/80",
+      iconStyle: "bordered" as const,
+      iconColor: "text-green-500"
     },
     {
       title: "Success Rate",
       value: "27.4%",
       change: { value: "+2.1% from last week", type: "increase" as const },
       icon: TrendingUp,
-      gradient: "from-secondary to-primary"
+      gradient: "from-secondary to-primary",
+      iconStyle: "bordered" as const,
+      iconColor: "text-purple-500"
     },
     {
       title: "Failed/Spam",
       value: 152,
       change: { value: "-5% from last week", type: "decrease" as const },
       icon: AlertTriangle,
-      gradient: "from-destructive to-destructive/80"
+      gradient: "from-destructive to-destructive/80",
+      iconStyle: "bordered" as const,
+      iconColor: "text-red-500"
     }
   ];
 
   const additionalStats = [
-    { title: "Total Cost", value: "$162.35", icon: Users },
-    { title: "Avg. Duration", value: "3m 45s", icon: AlertTriangle }
+    { 
+      title: "Total Cost", 
+      value: "$162.35", 
+      icon: Users,
+      iconStyle: "bordered" as const,
+      iconColor: "text-amber-500"
+    },
+    { 
+      title: "Avg. Duration", 
+      value: "3m 45s", 
+      icon: AlertTriangle,
+      iconStyle: "bordered" as const,
+      iconColor: "text-cyan-500"
+    }
   ];
 
   const allStats = [...stats, ...additionalStats];
@@ -72,7 +92,7 @@ export default function Outbound() {
           <div className="flex items-center space-x-3">
             <DatePickerWithRange />
             <Select defaultValue="all-assistants">
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-40 filter-select-trigger">
                 <SelectValue placeholder="All Assistants" />
               </SelectTrigger>
               <SelectContent>
@@ -82,11 +102,11 @@ export default function Outbound() {
                 <SelectItem value="lead-qualifier">Lead Qualifier</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" size="sm">
+            <Button size="sm" className="btn-action-primary">
               <Filter className="w-4 h-4 mr-2" />
               Filters
             </Button>
-            <Button variant="outline" size="sm">
+            <Button size="sm" className="btn-action-primary">
               <Download className="w-4 h-4 mr-2" />
               Export
             </Button>

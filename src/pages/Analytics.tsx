@@ -12,28 +12,36 @@ export default function Analytics() {
       value: 2847,
       change: { value: "+23% from last month", type: "increase" as const },
       icon: BarChart3,
-      gradient: "from-primary to-accent"
+      gradient: "from-primary to-accent",
+      iconStyle: "bordered" as const,
+      iconColor: "text-blue-500"
     },
     {
       title: "Success Rate",
       value: "68.2%",
       change: { value: "+5.1% from last month", type: "increase" as const },
       icon: TrendingUp,
-      gradient: "from-success to-success/80"
+      gradient: "from-success to-success/80",
+      iconStyle: "bordered" as const,
+      iconColor: "text-green-500"
     },
     {
       title: "Total Cost",
       value: "$1,423.50",
       change: { value: "+12% from last month", type: "increase" as const },
       icon: DollarSign,
-      gradient: "from-warning to-warning/80"
+      gradient: "from-warning to-warning/80",
+      iconStyle: "bordered" as const,
+      iconColor: "text-amber-500"
     },
     {
       title: "Avg. Duration",
       value: "4m 32s",
       change: { value: "+45s from last month", type: "increase" as const },
       icon: Clock,
-      gradient: "from-secondary to-primary"
+      gradient: "from-secondary to-primary",
+      iconStyle: "bordered" as const,
+      iconColor: "text-purple-500"
     }
   ];
 
@@ -72,7 +80,7 @@ export default function Analytics() {
         <div className="flex items-center space-x-3">
           <DatePickerWithRange />
           <Select defaultValue="all-assistants">
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-48 filter-select-trigger">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -107,8 +115,8 @@ export default function Analytics() {
         {/* Outbound Metrics */}
         <Card className="p-6 card-premium">
           <div className="flex items-center space-x-3 mb-6">
-            <div className="p-2 bg-gradient-primary rounded-lg">
-              <BarChart3 className="w-5 h-5 text-white" />
+            <div className="p-2 border-2 border-purple-500 bg-purple-500/10 rounded-lg">
+              <BarChart3 className="w-5 h-5 text-purple-500" />
             </div>
             <div>
               <h3 className="text-lg font-semibold">Outbound Performance</h3>
@@ -132,8 +140,8 @@ export default function Analytics() {
         {/* Inbound Metrics */}
         <Card className="p-6 card-premium">
           <div className="flex items-center space-x-3 mb-6">
-            <div className="p-2 bg-gradient-secondary rounded-lg">
-              <TrendingUp className="w-5 h-5 text-white" />
+            <div className="p-2 border-2 border-teal-500 bg-teal-500/10 rounded-lg">
+              <TrendingUp className="w-5 h-5 text-teal-500" />
             </div>
             <div>
               <h3 className="text-lg font-semibold">Inbound Performance</h3>
@@ -161,8 +169,8 @@ export default function Analytics() {
       <Card className="p-6 card-premium">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-gradient-accent rounded-lg">
-              <BarChart3 className="w-5 h-5 text-white" />
+            <div className="p-2 border-2 border-amber-500 bg-amber-500/10 rounded-lg">
+              <BarChart3 className="w-5 h-5 text-amber-500" />
             </div>
             <div>
               <h3 className="text-lg font-semibold">Assistant Performance</h3>
@@ -190,8 +198,8 @@ export default function Analytics() {
                 <tr key={assistant.name} className="border-b border-border/25 hover:bg-muted/25 transition-colors">
                   <td className="py-4 px-4">
                     <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-                        <span className="text-white text-sm font-bold">
+                      <div className="w-8 h-8 border-2 border-blue-500 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                        <span className="text-blue-500 text-sm font-bold">
                           {assistant.name.split(' ').map(word => word[0]).join('')}
                         </span>
                       </div>
@@ -213,8 +221,8 @@ export default function Analytics() {
       {/* Chart Placeholder */}
       <Card className="p-6 card-premium">
         <div className="flex items-center space-x-3 mb-6">
-          <div className="p-2 bg-gradient-hero rounded-lg">
-            <TrendingUp className="w-5 h-5 text-white" />
+          <div className="p-2 border-2 border-emerald-500 bg-emerald-500/10 rounded-lg">
+            <TrendingUp className="w-5 h-5 text-emerald-500" />
           </div>
           <div>
             <h3 className="text-lg font-semibold">Call Volume Trends</h3>

@@ -48,8 +48,8 @@ export default function Settings() {
           {/* API Integrations */}
           <Card className="p-6 card-premium">
             <div className="flex items-center space-x-3 mb-6">
-              <div className="p-2 bg-gradient-primary rounded-lg">
-                <Key className="w-5 h-5 text-white" />
+              <div className="p-2 border-2 border-blue-500 bg-blue-500/10 rounded-lg">
+                <Key className="w-5 h-5 text-blue-500" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold">API Integrations</h3>
@@ -62,8 +62,8 @@ export default function Settings() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-accent rounded-lg flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">V</span>
+                    <div className="w-10 h-10 border-2 border-purple-500 bg-purple-500/10 rounded-lg flex items-center justify-center">
+                      <span className="text-purple-500 font-bold text-sm">V</span>
                     </div>
                     <div>
                       <h4 className="font-medium">Vapi AI</h4>
@@ -121,8 +121,8 @@ export default function Settings() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-secondary rounded-lg flex items-center justify-center">
-                      <Phone className="w-5 h-5 text-white" />
+                    <div className="w-10 h-10 border-2 border-teal-500 bg-teal-500/10 rounded-lg flex items-center justify-center">
+                      <Phone className="w-5 h-5 text-teal-500" />
                     </div>
                     <div>
                       <h4 className="font-medium">Twilio</h4>
@@ -190,8 +190,8 @@ export default function Settings() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-accent rounded-lg flex items-center justify-center">
-                      <Webhook className="w-5 h-5 text-white" />
+                    <div className="w-10 h-10 border-2 border-amber-500 bg-amber-500/10 rounded-lg flex items-center justify-center">
+                      <Webhook className="w-5 h-5 text-amber-500" />
                     </div>
                     <div>
                       <h4 className="font-medium">N8N Automation</h4>
@@ -233,8 +233,7 @@ export default function Settings() {
                   <div className="flex items-end">
                     <Button 
                       onClick={() => testConnection("N8N")}
-                      variant="outline"
-                      className="w-full btn-ghost-premium"
+                      className="w-full btn-action-primary"
                     >
                       Test Webhook
                     </Button>
@@ -244,7 +243,7 @@ export default function Settings() {
             </div>
 
             <div className="flex justify-end mt-8 pt-6 border-t border-border/50">
-              <Button className="btn-hero">
+              <Button className="btn-action-primary">
                 Save Integration Settings
               </Button>
             </div>
@@ -255,8 +254,8 @@ export default function Settings() {
         <TabsContent value="account" className="space-y-6">
           <Card className="p-6 card-premium">
             <div className="flex items-center space-x-3 mb-6">
-              <div className="p-2 bg-gradient-secondary rounded-lg">
-                <User className="w-5 h-5 text-white" />
+              <div className="p-2 border-2 border-cyan-500 bg-cyan-500/10 rounded-lg">
+                <User className="w-5 h-5 text-cyan-500" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold">Account Information</h3>
@@ -298,8 +297,8 @@ export default function Settings() {
         <TabsContent value="billing" className="space-y-6">
           <Card className="p-6 card-premium">
             <div className="flex items-center space-x-3 mb-6">
-              <div className="p-2 bg-gradient-accent rounded-lg">
-                <CreditCard className="w-5 h-5 text-white" />
+              <div className="p-2 border-2 border-green-500 bg-green-500/10 rounded-lg">
+                <CreditCard className="w-5 h-5 text-green-500" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold">Billing & Subscription</h3>
@@ -344,8 +343,8 @@ export default function Settings() {
           <Card className="p-6 card-premium">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-gradient-hero rounded-lg">
-                  <Users className="w-5 h-5 text-white" />
+                <div className="p-2 border-2 border-indigo-500 bg-indigo-500/10 rounded-lg">
+                  <Users className="w-5 h-5 text-indigo-500" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold">Team Management</h3>
@@ -366,8 +365,8 @@ export default function Settings() {
               ].map((member, index) => (
                 <div key={index} className="flex items-center justify-between p-4 border border-border rounded-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
-                      <span className="text-white font-semibold">
+                    <div className="w-10 h-10 border-2 border-rose-500 bg-rose-500/10 rounded-lg flex items-center justify-center">
+                      <span className="text-rose-500 font-semibold">
                         {member.name.split(' ').map(n => n[0]).join('')}
                       </span>
                     </div>

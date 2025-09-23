@@ -66,13 +66,32 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
       <header className="border-b border-border/50 bg-card/50 backdrop-blur-md sticky top-0 z-50">
         <div className="container mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo & Brand */}
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow">
-              <Phone className="w-5 h-5 text-white" />
+          <div className="flex items-center space-x-4">
+            {/* Modern Professional Logo */}
+            <div className="relative flex items-center">
+              <div className="w-11 h-11 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center">
+                <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
+                  <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" 
+                        fill="url(#gradient1)" />
+                  <defs>
+                    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#3B82F6" />
+                      <stop offset="100%" stopColor="#8B5CF6" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
             </div>
-            <div>
-              <h1 className="text-xl font-poppins font-bold text-gradient-primary">CallFlow AI</h1>
-              <p className="text-xs text-muted-foreground">Premium Call Center</p>
+            
+            {/* Platform Branding */}
+            <div className="flex items-center space-x-3">
+              <div className="flex flex-col">
+                <div className="flex items-center space-x-1">
+                  <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">CallFlow</span>
+                  <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">AI</span>
+                </div>
+                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide">Communication Platform</span>
+              </div>
             </div>
           </div>
 
@@ -85,22 +104,19 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
               return (
                 <Button
                   key={item.id}
-                  variant={isActive ? "default" : "ghost"}
+                  variant="ghost"
                   size="sm"
                   onClick={() => onModeChange(item.id)}
                   className={`
-                    relative flex items-center space-x-2 px-4 py-2 transition-all duration-300
+                    relative flex items-center space-x-2 px-4 py-2 transition-all duration-300 rounded-lg
                     ${isActive 
-                      ? `bg-gradient-to-r ${item.gradient} text-white shadow-premium hover:shadow-glow` 
-                      : 'hover:bg-muted/80'
+                      ? 'bg-background border-2 border-primary text-primary shadow-sm font-semibold' 
+                      : 'hover:bg-background/50 hover:border-2 hover:border-muted-foreground/30 text-muted-foreground hover:text-foreground border-2 border-transparent'
                     }
                   `}
                 >
                   <Icon className="w-4 h-4" />
                   <span className="font-medium">{item.label}</span>
-                  {isActive && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent rounded-lg" />
-                  )}
                 </Button>
               );
             })}
@@ -137,13 +153,10 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 rounded-lg">
-                  <Avatar className="h-8 w-8 ring-2 ring-primary/20">
-                    <AvatarImage src="/api/placeholder/32/32" alt="Profile" />
-                    <AvatarFallback className="bg-gradient-primary text-white font-medium">
-                      JD
-                    </AvatarFallback>
-                  </Avatar>
+                <Button variant="ghost" className="relative h-9 w-9 rounded-lg p-0">
+                  <div className="p-1 rounded-lg border-2 border-indigo-500 bg-indigo-500/10 hover:bg-indigo-500/20 transition-colors">
+                    <User className="w-5 h-5 text-indigo-500" />
+                  </div>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -192,3 +205,9 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
     </div>
   );
 }
+
+
+
+
+
+

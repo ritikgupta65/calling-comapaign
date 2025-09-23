@@ -159,7 +159,7 @@ export default function History() {
           
           <div className="flex items-center space-x-3">
             <Select defaultValue="all-calls">
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-40 filter-select-trigger">
                 <SelectValue placeholder="All Calls" />
               </SelectTrigger>
               <SelectContent>
@@ -168,11 +168,11 @@ export default function History() {
                 <SelectItem value="failed">Failed Only</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" size="sm">
+            <Button size="sm" className="btn-professional-outline">
               <Filter className="w-4 h-4 mr-2" />
               Filters
             </Button>
-            <Button variant="outline" size="sm">
+            <Button size="sm" className="btn-professional-outline">
               <Download className="w-4 h-4 mr-2" />
               Export
             </Button>
@@ -256,7 +256,7 @@ export default function History() {
         <div className="flex items-center space-x-3">
           <DatePickerWithRange />
           <Select defaultValue="all-campaigns">
-            <SelectTrigger className="w-40">
+            <SelectTrigger className="w-40 filter-select-trigger">
               <SelectValue placeholder="All Campaigns" />
             </SelectTrigger>
             <SelectContent>
@@ -265,11 +265,11 @@ export default function History() {
               <SelectItem value="inbound">Inbound Only</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" size="sm">
+          <Button size="sm" className="btn-professional-outline">
             <Filter className="w-4 h-4 mr-2" />
             Filters
           </Button>
-          <Button variant="outline" size="sm">
+          <Button size="sm" className="btn-professional-outline">
             <Download className="w-4 h-4 mr-2" />
             Export
           </Button>
@@ -291,13 +291,13 @@ export default function History() {
             {outboundCampaigns.map((campaign) => (
               <Card 
                 key={campaign.id} 
-                className="p-6 m-2 card-premium hover:shadow-glow transition-all duration-300 cursor-pointer"
+                className="p-6 m-2 card-premium hover:border-blue-500 hover:border-2 transition-all duration-300 cursor-pointer"
                 onClick={() => handleCampaignClick(campaign)}
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                      <Phone className="w-6 h-6 text-primary" />
+                    <div className="w-12 h-12 border-2 border-blue-500 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                      <Phone className="w-6 h-6 text-blue-500" />
                     </div>
                     <div className="space-y-1">
                       <p className="font-medium text-base">{campaign.name}</p>
@@ -340,13 +340,13 @@ export default function History() {
             {inboundCampaigns.map((campaign) => (
               <Card 
                 key={campaign.id} 
-                className="p-6 m-2 card-premium hover:shadow-glow transition-all duration-300 cursor-pointer"
+                className="p-6 m-2 card-premium hover:border-blue-500 hover:border-2 transition-all duration-300 cursor-pointer"
                 onClick={() => handleCampaignClick(campaign)}
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
-                      <Headphones className="w-6 h-6 text-secondary" />
+                    <div className="w-12 h-12 border-2 border-emerald-500 bg-emerald-500/10 rounded-lg flex items-center justify-center">
+                      <Headphones className="w-6 h-6 text-emerald-500" />
                     </div>
                     <div className="space-y-1">
                       <p className="font-medium text-base">{campaign.name}</p>

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Upload, Play, Square, Pause, Users, Phone, Bot, Settings, BarChart3, X, Calendar, Filter, Download } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Upload, Play, Pause, Users, Phone, Bot, Settings, BarChart3, X, Calendar, Filter, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -9,6 +9,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 
 interface CampaignSetupProps {
@@ -31,13 +41,102 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
   const [selectedAssistant, setSelectedAssistant] = useState("");
   const [parallelCalls, setParallelCalls] = useState([3]);
   const [isDragOver, setIsDragOver] = useState(false);
-  const [campaignStatus, setCampaignStatus] = useState<"running" | "paused" | "stopped">("running");
   const [activeCampaigns, setActiveCampaigns] = useState<any[]>([]);
   const [availableAssistants, setAvailableAssistants] = useState(assistants);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [campaignToDelete, setCampaignToDelete] = useState<{id: string, name: string} | null>(null);
+  const [buttonStates, setButtonStates] = useState<{[key: string]: {action: string, timestamp: number}}>({});
+  const [campaignStates, setCampaignStates] = useState<{[key: string]: {
+    status: "running" | "paused", 
+    activeAction: "none" | "pause" | "resume" | "live"
+  }}>({});
+
+  // Initialize with activeCampaign prop if provided
+  useEffect(() => {
+    if (activeCampaign && activeCampaigns.length === 0) {
+      setActiveCampaigns([activeCampaign]);
+      // Initialize with default state (all buttons blue)
+      setCampaignStates(prev => ({
+        ...prev,
+        [activeCampaign.id]: {
+          status: activeCampaign.status || "running",
+          activeAction: "none"
+        }
+      }));
+    }
+  }, [activeCampaign]);
 
   const handleFileUpload = (file: File) => {
     setSelectedFile(file);
     // File processing logic would go here
+  };
+
+  // Helper function to get button color based on campaign state
+  const getButtonColor = (campaignId: string, buttonType: 'pause' | 'live') => {
+    const state = campaignStates[campaignId];
+    if (!state) {
+      return 'btn-state-blue'; // Default state - all buttons blue
+    }
+    
+    const { activeAction } = state;
+    
+    switch (activeAction) {
+      case 'pause':
+        // When Pause is clicked: Pause/Resume → Orange, Live → Grey
+        if (buttonType === 'pause') return 'btn-state-orange';
+        return 'btn-state-grey'; // live disabled
+        
+      case 'resume':
+        // When Resume is clicked: Pause/Resume → Green, Live → Blue
+        if (buttonType === 'pause') return 'btn-state-green';
+        return 'btn-state-blue'; // live active
+        
+      case 'live':
+        // When Live is clicked: Live → Green, Pause/Resume → Blue
+        if (buttonType === 'live') return 'btn-state-green';
+        return 'btn-state-blue'; // pause active
+        
+      default:
+        // Default state: All buttons blue
+        return 'btn-state-blue';
+    }
+  };
+  
+  // Helper function to check if button should be disabled
+  const isButtonDisabled = (campaignId: string, buttonType: 'pause' | 'live') => {
+    const state = campaignStates[campaignId];
+    if (!state) return false;
+    
+    const { activeAction } = state;
+    
+    // When Pause is clicked: Live is disabled
+    if (activeAction === 'pause') {
+      return buttonType === 'live';
+    }
+    
+    // When Resume or Live is clicked: No buttons are disabled
+    // Default state: No buttons are disabled
+    return false;
+  };
+  
+  // Helper function to get button text and icon for pause/resume
+  const getPauseButtonContent = (campaignId: string) => {
+    const state = campaignStates[campaignId];
+    
+    // If campaign is paused, show "Resume" button
+    const isPaused = state?.status === "paused";
+    
+    if (isPaused) {
+      return {
+        icon: <Play className="w-4 h-4 mr-1" />,
+        text: "Resume"
+      };
+    } else {
+      return {
+        icon: <Pause className="w-4 h-4 mr-1" />,
+        text: "Pause"
+      };
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -52,12 +151,13 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
   const handleStartCampaign = () => {
     const selectedAssistantData = availableAssistants.find(a => a.id === selectedAssistant);
     if (selectedAssistantData && campaignName && selectedFile) {
+      const newCampaignId = Date.now().toString();
       const newCampaign = {
-        id: Date.now().toString(),
+        id: newCampaignId,
         name: campaignName,
         assistant: selectedAssistantData.name,
         number: selectedAssistantData.number,
-        status: "active",
+        status: "running" as const,
         total: 1250,
         completed: 342,
         pending: 756,
@@ -65,38 +165,146 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
         startTime: "Just now"
       };
       
-      setActiveCampaigns([...activeCampaigns, newCampaign]);
-      setAvailableAssistants(availableAssistants.filter(a => a.id !== selectedAssistant));
+      // Initialize campaign state
+      setCampaignStates(prev => ({
+        ...prev,
+        [newCampaignId]: {
+          status: "running",
+          activeAction: "none"
+        }
+      }));
+      
+      // Add new campaign to existing campaigns (not replace)
+      setActiveCampaigns(prevCampaigns => [...prevCampaigns, newCampaign]);
+      
+      // Remove selected assistant from available list
+      setAvailableAssistants(prevAssistants => 
+        prevAssistants.filter(a => a.id !== selectedAssistant)
+      );
       
       // Reset form
       setCampaignName("");
       setSelectedFile(null);
       setSelectedAssistant("");
+      
+      console.log("New campaign created:", newCampaign);
+      console.log("Total active campaigns:", activeCampaigns.length + 1);
     }
   };
 
   const handleRemoveCampaign = (campaignId: string) => {
-    const campaignToRemove = activeCampaigns.find(c => c.id === campaignId);
-    if (campaignToRemove) {
-      const assistantToRestore = assistants.find(a => a.name === campaignToRemove.assistant);
-      if (assistantToRestore) {
-        setAvailableAssistants([...availableAssistants, assistantToRestore]);
-      }
-      setActiveCampaigns(activeCampaigns.filter(c => c.id !== campaignId));
+    const campaign = activeCampaigns.find(c => c.id === campaignId);
+    if (campaign) {
+      setCampaignToDelete({ id: campaignId, name: campaign.name });
+      setShowDeleteDialog(true);
     }
   };
 
-  const handlePause = () => {
-    setCampaignStatus(campaignStatus === "paused" ? "running" : "paused");
-    console.log("Toggling campaign pause");
+  const confirmRemoveCampaign = () => {
+    if (campaignToDelete) {
+      const campaignToRemove = activeCampaigns.find(c => c.id === campaignToDelete.id);
+      if (campaignToRemove) {
+        // Restore assistant to available list
+        const assistantToRestore = assistants.find(a => a.name === campaignToRemove.assistant);
+        if (assistantToRestore) {
+          setAvailableAssistants(prevAssistants => [...prevAssistants, assistantToRestore]);
+        }
+        
+        // Remove campaign from active campaigns
+        setActiveCampaigns(prevCampaigns => 
+          prevCampaigns.filter(c => c.id !== campaignToDelete.id)
+        );
+      }
+      setShowDeleteDialog(false);
+      setCampaignToDelete(null);
+    }
   };
 
-  const handleStop = () => {
-    setCampaignStatus("stopped");
-    console.log("Stopping campaign");
+  const cancelRemoveCampaign = () => {
+    setShowDeleteDialog(false);
+    setCampaignToDelete(null);
   };
 
-  const handleLiveReport = () => {
+  const handlePause = (campaignId: string) => {
+    const currentState = campaignStates[campaignId];
+    const isCurrentlyPaused = currentState?.status === "paused";
+    
+    let newStatus: "running" | "paused";
+    let newActiveAction: "none" | "pause" | "resume" | "live";
+    
+    if (isCurrentlyPaused) {
+      // If currently paused, "Resume" button was clicked
+      newStatus = "running";
+      newActiveAction = "resume";
+    } else {
+      // If not paused, "Pause" button was clicked
+      newStatus = "paused";
+      newActiveAction = "pause";
+    }
+    
+    // Update campaign status
+    setActiveCampaigns(prevCampaigns => 
+      prevCampaigns.map(campaign => 
+        campaign.id === campaignId 
+          ? { ...campaign, status: newStatus }
+          : campaign
+      )
+    );
+    
+    // Update campaign state for button colors
+    setCampaignStates(prev => ({
+      ...prev,
+      [campaignId]: {
+        status: newStatus,
+        activeAction: newActiveAction
+      }
+    }));
+    
+    // Add button click feedback
+    setButtonStates(prev => ({
+      ...prev,
+      [`${campaignId}-pause`]: { action: 'clicked', timestamp: Date.now() }
+    }));
+    
+    // Remove click feedback after animation
+    setTimeout(() => {
+      setButtonStates(prev => {
+        const newStates = { ...prev };
+        delete newStates[`${campaignId}-pause`];
+        return newStates;
+      });
+    }, 200);
+  };
+
+  const handleLiveReport = (campaignId?: string) => {
+    if (campaignId) {
+      // Update campaign state for button colors
+      setCampaignStates(prev => ({
+        ...prev,
+        [campaignId]: {
+          ...prev[campaignId],
+          activeAction: "live"
+        }
+      }));
+      
+      // Add button click feedback
+      setButtonStates(prev => ({
+        ...prev,
+        [`${campaignId}-report`]: { action: 'clicked', timestamp: Date.now() }
+      }));
+      
+      // Remove click feedback after animation
+      setTimeout(() => {
+        setButtonStates(prev => {
+          const newStates = { ...prev };
+          delete newStates[`${campaignId}-report`];
+          return newStates;
+        });
+      }, 200);
+      
+      console.log("Live report activated for campaign:", campaignId);
+    }
+    
     navigate("/live-report");
   };
 
@@ -107,8 +315,8 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
     { title: "Avg. Duration", value: "3m 45s", icon: Settings }
   ];
 
-  // Use activeCampaigns instead of single activeCampaign for rendering
-  const campaignsToShow = activeCampaigns.length > 0 ? activeCampaigns : (activeCampaign ? [activeCampaign] : []);
+  // Always use activeCampaigns state for rendering, ignore the prop
+  const campaignsToShow = activeCampaigns;
 
   return (
     <div className="space-y-6">
@@ -133,8 +341,8 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
       {/* New Campaign Setup Form */}
       <Card className="p-6 card-premium">
         <div className="flex items-center space-x-3 mb-6">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Play className="w-5 h-5 text-primary" />
+          <div className="p-2 border-2 border-green-500 bg-green-500/10 rounded-lg">
+            <Play className="w-5 h-5 text-green-500" />
           </div>
           <div>
             <h3 className="text-lg font-semibold">New Campaign Setup</h3>
@@ -249,7 +457,7 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
             <Button 
               onClick={handleStartCampaign}
               disabled={!campaignName || !selectedFile || !selectedAssistant}
-              className="w-full btn-professional"
+              className="w-full btn-action-primary"
               size="lg"
             >
               <Play className="w-5 h-5 mr-2" />
@@ -277,35 +485,34 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
                 </div>
                 <div className="flex items-center space-x-2">
                   <Button 
-                    variant={campaignStatus === "paused" ? "success" : "outline"} 
                     size="sm" 
-                    onClick={handlePause}
+                    onClick={() => handlePause(campaign.id)}
+                    disabled={isButtonDisabled(campaign.id, 'pause')}
+                    className={`
+                      ${getButtonColor(campaign.id, 'pause')}
+                      ${buttonStates[`${campaign.id}-pause`]?.action === 'clicked' ? 'btn-clicked' : ''}
+                    `}
                   >
-                    {campaignStatus === "paused" ? (
-                      <>
-                        <Play className="w-4 h-4 mr-1" />
-                        Resume
-                      </>
-                    ) : (
-                      <>
-                        <Pause className="w-4 h-4 mr-1" />
-                        Pause
-                      </>
-                    )}
+                    {getPauseButtonContent(campaign.id).icon}
+                    {getPauseButtonContent(campaign.id).text}
                   </Button>
-                  <Button variant="destructive" size="sm" onClick={handleStop}>
-                    <Square className="w-4 h-4 mr-1" />
-                    Stop
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={handleLiveReport}>
+                  <Button 
+                    size="sm" 
+                    onClick={() => handleLiveReport(campaign.id)}
+                    disabled={isButtonDisabled(campaign.id, 'live')}
+                    className={`
+                      ${getButtonColor(campaign.id, 'live')}
+                      ${buttonStates[`${campaign.id}-report`]?.action === 'clicked' ? 'btn-clicked' : ''}
+                    `}
+                  >
                     <BarChart3 className="w-4 h-4 mr-1" />
-                    Live Report
+                    Live
                   </Button>
                   <Button 
                     variant="ghost" 
                     size="sm" 
                     onClick={() => handleRemoveCampaign(campaign.id)}
-                    className="text-destructive hover:bg-destructive/10"
+                    className="btn-professional-ghost text-destructive hover:bg-destructive/10 hover:text-destructive"
                   >
                     <X className="w-4 h-4" />
                   </Button>
@@ -392,6 +599,30 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
           </div>
         </Card>
       )}
+
+      {/* Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel Campaign</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to cancel the campaign "{campaignToDelete?.name}"? 
+              This action cannot be undone and the campaign will be stopped immediately.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={cancelRemoveCampaign}>
+              Keep Campaign
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmRemoveCampaign}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Cancel Campaign
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

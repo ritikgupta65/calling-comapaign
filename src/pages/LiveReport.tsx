@@ -180,8 +180,8 @@ export default function LiveReport() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card className="p-4 card-premium">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Phone className="w-5 h-5 text-primary" />
+              <div className="p-2 border-2 border-blue-500 bg-blue-500/10 rounded-lg">
+                <Phone className="w-5 h-5 text-blue-500" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{campaignData.total}</p>
@@ -239,7 +239,7 @@ export default function LiveReport() {
               <div key={contact.id} className="p-4 hover:bg-muted/20 transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 border-2 border-gray-500 bg-gray-500/10 rounded-lg flex items-center justify-center">
                       {getStatusIcon(contact.status)}
                     </div>
                     <div>

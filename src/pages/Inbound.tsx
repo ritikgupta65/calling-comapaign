@@ -1,11 +1,21 @@
-import { useState } from "react";
-import { Headphones, Clock, Users, PhoneForwarded, Play, Square, User, Plus, X, Pause, BarChart3, Calendar, Filter, Download } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Headphones, Clock, Users, PhoneForwarded, Play, User, Plus, X, Pause, BarChart3, Calendar, Filter, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import StatsCard from "@/components/dashboard/StatsCard";
 import { useNavigate } from "react-router-dom";
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
@@ -14,14 +24,85 @@ export default function Inbound() {
   const navigate = useNavigate();
   const [isReceptionActive, setIsReceptionActive] = useState(true);
   const [selectedAssistant, setSelectedAssistant] = useState("");
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [campaignToDelete, setCampaignToDelete] = useState<{id: string, assistant: string} | null>(null);
   const [activeCampaigns, setActiveCampaigns] = useState([
     {
       id: "1",
       assistant: "Customer Support Pro",
       number: "+1 (555) 123-4567",
-      status: "active" as const
+      status: "running" as "running" | "paused"
     }
   ]);
+  const [buttonStates, setButtonStates] = useState<{[key: string]: {action: string, timestamp: number}}>({});
+  const [campaignStates, setCampaignStates] = useState<{[key: string]: {
+    status: "running" | "paused", 
+    activeAction: "none" | "pause" | "resume" | "live"
+  }}>({});
+
+  // Initialize existing campaigns with default state
+  useEffect(() => {
+    activeCampaigns.forEach(campaign => {
+      if (!campaignStates[campaign.id]) {
+        setCampaignStates(prev => ({
+          ...prev,
+          [campaign.id]: {
+            status: "running",
+            activeAction: "none"
+          }
+        }));
+      }
+    });
+  }, [activeCampaigns, campaignStates]);
+
+  // Auto-pause/resume all inbound campaigns when reception status changes
+  useEffect(() => {
+    if (!isReceptionActive) {
+      // When reception is turned off, pause all running campaigns
+      setActiveCampaigns(prevCampaigns => 
+        prevCampaigns.map(campaign => ({
+          ...campaign,
+          status: "paused" as "running" | "paused"
+        }))
+      );
+      
+      // Update all campaign states to paused
+      setCampaignStates(prev => {
+        const updatedStates = { ...prev };
+        activeCampaigns.forEach(campaign => {
+          if (updatedStates[campaign.id]) {
+            updatedStates[campaign.id] = {
+              status: "paused",
+              activeAction: "pause"
+            };
+          }
+        });
+        return updatedStates;
+      });
+    } else {
+      // When reception is turned back on, resume all paused campaigns
+      setActiveCampaigns(prevCampaigns => 
+        prevCampaigns.map(campaign => ({
+          ...campaign,
+          status: "running" as "running" | "paused"
+        }))
+      );
+      
+      // Update all campaign states to running
+      setCampaignStates(prev => {
+        const updatedStates = { ...prev };
+        activeCampaigns.forEach(campaign => {
+          if (updatedStates[campaign.id]) {
+            updatedStates[campaign.id] = {
+              status: "running",
+              activeAction: "none"
+            };
+          }
+        });
+        return updatedStates;
+      });
+    }
+  }, [isReceptionActive]);
 
   const stats = [
     {
@@ -29,28 +110,36 @@ export default function Inbound() {
       value: 89,
       change: { value: "+15% from yesterday", type: "increase" as const },
       icon: Headphones,
-      gradient: "from-secondary to-primary"
+      gradient: "from-secondary to-primary",
+      iconStyle: "bordered" as const,
+      iconColor: "text-blue-600"
     },
     {
       title: "Avg. Duration",
       value: "3m 45s",
       change: { value: "+30s from yesterday", type: "increase" as const },
       icon: Clock,
-      gradient: "from-primary to-accent"
+      gradient: "from-primary to-accent",
+      iconStyle: "bordered" as const,
+      iconColor: "text-emerald-500"
     },
     {
       title: "Handover Rate",
       value: "12%",
       change: { value: "-3% from yesterday", type: "decrease" as const },
       icon: PhoneForwarded,
-      gradient: "from-accent to-secondary"
+      gradient: "from-accent to-secondary",
+      iconStyle: "bordered" as const,
+      iconColor: "text-orange-500"
     },
     {
       title: "Active Calls",
       value: 3,
       change: { value: "2 waiting", type: "neutral" as const },
       icon: Users,
-      gradient: "from-warning to-warning/80"
+      gradient: "from-warning to-warning/80",
+      iconStyle: "bordered" as const,
+      iconColor: "text-violet-500"
     }
   ];
 
@@ -119,33 +208,202 @@ export default function Inbound() {
     !activeCampaigns.some(campaign => campaign.assistant === assistant.name)
   );
 
-  const inboundStats = [
-    { title: "Total Calls", value: "1,847", icon: Headphones },
-    { title: "Success Rate", value: "94.2%", icon: BarChart3 },
-    { title: "Total Cost", value: "$92.35", icon: Users },
-    { title: "Avg. Duration", value: "4m 12s", icon: Clock }
-  ];
-
   const handleNewCampaign = () => {
     if (selectedAssistant) {
       const assistant = availableAssistants.find(a => a.id === selectedAssistant);
       if (assistant) {
+        const newCampaignId = Date.now().toString();
         setActiveCampaigns([...activeCampaigns, {
-          id: Date.now().toString(),
+          id: newCampaignId,
           assistant: assistant.name,
           number: assistant.number,
-          status: "active" as const
+          status: "running" as "running" | "paused"
         }]);
+        
+        // Initialize campaign state
+        setCampaignStates(prev => ({
+          ...prev,
+          [newCampaignId]: {
+            status: "running",
+            activeAction: "none"
+          }
+        }));
+        
         setSelectedAssistant("");
       }
     }
   };
 
   const handleRemoveCampaign = (campaignId: string) => {
-    setActiveCampaigns(activeCampaigns.filter(c => c.id !== campaignId));
+    const campaign = activeCampaigns.find(c => c.id === campaignId);
+    if (campaign) {
+      setCampaignToDelete({ id: campaignId, assistant: campaign.assistant });
+      setShowDeleteDialog(true);
+    }
+  };
+
+  const confirmRemoveCampaign = () => {
+    if (campaignToDelete) {
+      setActiveCampaigns(activeCampaigns.filter(c => c.id !== campaignToDelete.id));
+      setShowDeleteDialog(false);
+      setCampaignToDelete(null);
+    }
+  };
+
+  const cancelRemoveCampaign = () => {
+    setShowDeleteDialog(false);
+    setCampaignToDelete(null);
   };
 
   const handleLiveReport = () => {
+    navigate("/live-report");
+  };
+
+  // Helper function to get button color based on campaign state
+  const getButtonColor = (campaignId: string, buttonType: 'pause' | 'live') => {
+    const state = campaignStates[campaignId];
+    if (!state) {
+      return 'btn-state-blue'; // Default state - all buttons blue
+    }
+    
+    const { activeAction } = state;
+    
+    switch (activeAction) {
+      case 'pause':
+        // When Pause is clicked: Pause/Resume → Orange, Live → Grey
+        if (buttonType === 'pause') return 'btn-state-orange';
+        return 'btn-state-grey'; // live disabled
+        
+      case 'resume':
+        // When Resume is clicked: Pause/Resume → Green, Live → Blue
+        if (buttonType === 'pause') return 'btn-state-green';
+        return 'btn-state-blue'; // live active
+        
+      case 'live':
+        // When Live is clicked: Live → Green, Pause/Resume → Blue
+        if (buttonType === 'live') return 'btn-state-green';
+        return 'btn-state-blue'; // pause active
+        
+      default:
+        // Default state: All buttons blue
+        return 'btn-state-blue';
+    }
+  };
+  
+  // Helper function to check if button should be disabled
+  const isButtonDisabled = (campaignId: string, buttonType: 'pause' | 'live') => {
+    const state = campaignStates[campaignId];
+    if (!state) return false;
+    
+    const { activeAction } = state;
+    
+    // When Pause is clicked: Live is disabled
+    if (activeAction === 'pause') {
+      return buttonType === 'live';
+    }
+    
+    // When Resume or Live is clicked: No buttons are disabled
+    // Default state: No buttons are disabled
+    return false;
+  };
+  
+  // Helper function to get button text and icon for pause/resume
+  const getPauseButtonContent = (campaignId: string) => {
+    const state = campaignStates[campaignId];
+    
+    // If campaign is paused, show "Resume" button
+    const isPaused = state?.status === "paused";
+    
+    if (isPaused) {
+      return {
+        icon: <Play className="w-4 h-4 mr-1" />,
+        text: "Resume"
+      };
+    } else {
+      return {
+        icon: <Pause className="w-4 h-4 mr-1" />,
+        text: "Pause"
+      };
+    }
+  };
+
+  const handlePause = (campaignId: string) => {
+    const currentState = campaignStates[campaignId];
+    const isCurrentlyPaused = currentState?.status === "paused";
+    
+    let newStatus: "running" | "paused";
+    let newActiveAction: "none" | "pause" | "resume" | "live";
+    
+    if (isCurrentlyPaused) {
+      // If currently paused, "Resume" button was clicked
+      newStatus = "running";
+      newActiveAction = "resume";
+    } else {
+      // If not paused, "Pause" button was clicked
+      newStatus = "paused";
+      newActiveAction = "pause";
+    }
+    
+    // Update campaign status
+    setActiveCampaigns(prevCampaigns => 
+      prevCampaigns.map(campaign => 
+        campaign.id === campaignId 
+          ? { ...campaign, status: newStatus }
+          : campaign
+      )
+    );
+    
+    // Update campaign state for button colors
+    setCampaignStates(prev => ({
+      ...prev,
+      [campaignId]: {
+        status: newStatus,
+        activeAction: newActiveAction
+      }
+    }));
+    
+    // Add button click feedback
+    setButtonStates(prev => ({
+      ...prev,
+      [`${campaignId}-pause`]: { action: 'clicked', timestamp: Date.now() }
+    }));
+    
+    // Remove click feedback after animation
+    setTimeout(() => {
+      setButtonStates(prev => {
+        const newStates = { ...prev };
+        delete newStates[`${campaignId}-pause`];
+        return newStates;
+      });
+    }, 200);
+  };
+
+  const handleInboundLiveReport = (campaignId: string) => {
+    // Update campaign state for button colors
+    setCampaignStates(prev => ({
+      ...prev,
+      [campaignId]: {
+        ...prev[campaignId],
+        activeAction: "live"
+      }
+    }));
+    
+    // Add button click feedback
+    setButtonStates(prev => ({
+      ...prev,
+      [`${campaignId}-report`]: { action: 'clicked', timestamp: Date.now() }
+    }));
+    
+    // Remove click feedback after animation
+    setTimeout(() => {
+      setButtonStates(prev => {
+        const newStates = { ...prev };
+        delete newStates[`${campaignId}-report`];
+        return newStates;
+      });
+    }, 200);
+    
+    console.log("Live report activated for inbound campaign:", campaignId);
     navigate("/live-report");
   };
 
@@ -175,14 +433,14 @@ export default function Inbound() {
         </Badge>
       </div>
 
-      {/* Analytics Section */}
+      {/* Inbound Analysis Section */}
       <Card className="p-6 card-premium">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold">Inbound Analytics</h3>
+          <h3 className="text-lg font-semibold">Inbound Analysis</h3>
           <div className="flex items-center space-x-3">
             <DatePickerWithRange />
             <Select defaultValue="all-assistants">
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-40 filter-select-trigger">
                 <SelectValue placeholder="All Assistants" />
               </SelectTrigger>
               <SelectContent>
@@ -194,50 +452,42 @@ export default function Inbound() {
                 ))}
               </SelectContent>
             </Select>
-            <Button variant="outline" size="sm">
+            <Button size="sm" className="btn-action-primary">
               <Filter className="w-4 h-4 mr-2" />
               Filters
             </Button>
-            <Button variant="outline" size="sm">
+            <Button size="sm" className="btn-action-primary">
               <Download className="w-4 h-4 mr-2" />
               Export
             </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-8 gap-4">
-          {stats.map((stat, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {stats.slice(0, 3).map((stat, index) => (
             <div key={stat.title} style={{ animationDelay: `${index * 100}ms` }} className="animate-slide-up">
-              <div className="h-[120px]">
-                <StatsCard {...stat} />
-              </div>
+              <StatsCard {...stat} />
             </div>
           ))}
-          {inboundStats.map((stat, index) => (
-            <div key={stat.title} style={{ animationDelay: `${(index + 4) * 100}ms` }} className="animate-slide-up">
-              <Card className="p-4 card-premium h-[120px]">
-                <div className="flex items-center justify-between h-full">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-secondary/10 rounded-lg">
-                      <stat.icon className="w-5 h-5 text-secondary" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold">{stat.value}</p>
-                      <p className="text-sm text-muted-foreground">{stat.title}</p>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          ))}
+          <div style={{ animationDelay: "300ms" }} className="animate-slide-up">
+            <StatsCard 
+              title="Active Calls"
+              value={stats[3].value}
+              change={stats[3].change}
+              icon={stats[3].icon}
+              gradient={stats[3].gradient}
+              iconStyle="bordered"
+              iconColor="text-violet-500"
+            />
+          </div>
         </div>
       </Card>
 
       {/* Reception Control Panel */}
       <Card className="p-6 card-gradient border-secondary/20">
         <div className="flex items-center space-x-3 mb-6">
-          <div className="p-2 bg-gradient-secondary rounded-lg">
-            <Headphones className="w-5 h-5 text-white" />
+          <div className="p-2 rounded-lg border-2 border-blue-500 bg-blue-500/10">
+            <Headphones className="w-5 h-5 text-blue-500" />
           </div>
           <div>
             <h3 className="text-lg font-semibold">Reception Control</h3>
@@ -269,7 +519,7 @@ export default function Inbound() {
               <Label>Add New Inbound Campaign</Label>
               <div className="flex space-x-2">
                 <Select value={selectedAssistant} onValueChange={setSelectedAssistant}>
-                  <SelectTrigger className="flex-1">
+                  <SelectTrigger className="flex-1 filter-select-trigger">
                     <SelectValue placeholder="Select assistant" />
                   </SelectTrigger>
                   <SelectContent>
@@ -292,7 +542,7 @@ export default function Inbound() {
                 <Button 
                   onClick={handleNewCampaign} 
                   disabled={!selectedAssistant || !isReceptionActive}
-                  className="btn-professional"
+                  className="btn-action-primary"
                 >
                   <Plus className="w-4 h-4 mr-1" />
                   New Campaign
@@ -320,8 +570,8 @@ export default function Inbound() {
                 <Card key={campaign.id} className="p-4 card-premium">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <Headphones className="w-5 h-5 text-primary" />
+                      <div className="w-10 h-10 border-2 border-cyan-500 bg-cyan-500/10 rounded-lg flex items-center justify-center">
+                        <Headphones className="w-5 h-5 text-cyan-500" />
                       </div>
                       <div>
                         <p className="font-medium">{campaign.assistant}</p>
@@ -333,34 +583,52 @@ export default function Inbound() {
                       <Badge 
                         variant="outline" 
                         className={
-                          isReceptionActive 
+                          isReceptionActive && campaignStates[campaign.id]?.status !== "paused"
                             ? "bg-success/10 text-success border-success/20"
+                            : campaignStates[campaign.id]?.status === "paused"
+                            ? "bg-warning/10 text-warning border-warning/20"
                             : "bg-muted/10 text-muted-foreground border-muted/20"
                         }
                       >
-                        {isReceptionActive ? "Active" : "Inactive"}
+                        {!isReceptionActive 
+                          ? "Inactive" 
+                          : campaignStates[campaign.id]?.status === "paused" 
+                          ? "Paused" 
+                          : "Active"}
                       </Badge>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-2">
-                    <Button variant="outline" size="sm" className="hover:bg-muted">
-                      <Pause className="w-4 h-4 mr-1" />
-                      Pause
+                    <Button 
+                      size="sm" 
+                      onClick={() => handlePause(campaign.id)}
+                      disabled={isButtonDisabled(campaign.id, 'pause')}
+                      className={`
+                        ${getButtonColor(campaign.id, 'pause')}
+                        ${buttonStates[`${campaign.id}-pause`]?.action === 'clicked' ? 'btn-clicked' : ''}
+                      `}
+                    >
+                      {getPauseButtonContent(campaign.id).icon}
+                      {getPauseButtonContent(campaign.id).text}
                     </Button>
-                    <Button variant="destructive" size="sm">
-                      <Square className="w-4 h-4 mr-1" />
-                      Stop
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={handleLiveReport} className="hover:bg-muted">
+                    <Button 
+                      size="sm" 
+                      onClick={() => handleInboundLiveReport(campaign.id)}
+                      disabled={isButtonDisabled(campaign.id, 'live')}
+                      className={`
+                        ${getButtonColor(campaign.id, 'live')}
+                        ${buttonStates[`${campaign.id}-report`]?.action === 'clicked' ? 'btn-clicked' : ''}
+                      `}
+                    >
                       <BarChart3 className="w-4 h-4 mr-1" />
-                      Live Report
+                      Live
                     </Button>
                     <Button 
                       variant="ghost" 
                       size="sm" 
                       onClick={() => handleRemoveCampaign(campaign.id)}
-                      className="text-destructive hover:bg-destructive/10"
+                      className="btn-professional-ghost text-destructive hover:bg-destructive/10 hover:text-destructive"
                     >
                       <X className="w-4 h-4" />
                     </Button>
@@ -387,11 +655,11 @@ export default function Inbound() {
           
           <div className="space-y-4">
             {recentCalls.map((call) => (
-              <Card key={call.id} className="p-4 card-premium hover:shadow-glow transition-all duration-300">
+              <Card key={call.id} className="p-4 card-premium hover:border-blue-500 hover:border-2 transition-all duration-300">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center">
-                      <Headphones className="w-4 h-4 text-muted-foreground" />
+                    <div className="w-8 h-8 border-2 border-slate-500 bg-slate-500/10 rounded-lg flex items-center justify-center">
+                      <Headphones className="w-4 h-4 text-slate-500" />
                     </div>
                     <div>
                       <p className="font-medium text-sm">{call.caller}</p>
@@ -419,6 +687,30 @@ export default function Inbound() {
           </div>
         </div>
       </div>
+
+      {/* Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel Campaign</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to cancel the campaign "{campaignToDelete?.assistant}"? 
+              This action cannot be undone and the campaign will be stopped immediately.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={cancelRemoveCampaign}>
+              Keep Campaign
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmRemoveCampaign}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Cancel Campaign
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
