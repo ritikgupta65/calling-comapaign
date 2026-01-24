@@ -20,7 +20,11 @@ interface LayoutProps {
 }
 
 export default function Layout({ children, currentMode, onModeChange }: LayoutProps) {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    // Set dark mode as default
+    document.documentElement.classList.add("dark");
+    return true;
+  });
   const location = useLocation();
   const navigate = useNavigate();
 
