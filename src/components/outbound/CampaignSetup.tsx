@@ -323,15 +323,15 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
       {/* Campaign Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold font-poppins text-gradient-primary">
+          <h2 className="text-[22px] font-semibold tracking-tight text-foreground">
             Outbound Campaigns
           </h2>
           <p className="text-muted-foreground">AI-powered automated calling</p>
         </div>
         
         {campaignsToShow.length > 0 && (
-          <Badge variant="outline" className="bg-success/10 text-success border-success/20 px-4 py-2">
-            <div className="w-2 h-2 bg-success rounded-full mr-2 animate-pulse" />
+          <Badge variant="outline" className="status-badge border-success/25 bg-success/10 text-success">
+            <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
             {campaignsToShow.length} Campaign{campaignsToShow.length > 1 ? 's' : ''} Active
           </Badge>
         )}
@@ -341,8 +341,8 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
       {/* New Campaign Setup Form */}
       <Card className="p-6 card-premium">
         <div className="flex items-center space-x-3 mb-6">
-          <div className="p-2 border-2 border-green-500 bg-green-500/10 rounded-lg">
-            <Play className="w-5 h-5 text-green-500" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-white/[.05]">
+            <Play className="h-4 w-4 text-muted-foreground" />
           </div>
           <div>
             <h3 className="text-lg font-semibold">New Campaign Setup</h3>
@@ -355,7 +355,7 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
           <div className="space-y-6">
             {/* Campaign Name */}
             <div className="space-y-2">
-              <Label htmlFor="campaign-name">Campaign Name</Label>
+              <Label className="text-[13px] font-medium text-foreground/90" htmlFor="campaign-name">Campaign Name</Label>
               <Input
                 id="campaign-name"
                 placeholder="e.g., Q4 Lead Generation"
@@ -367,10 +367,10 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
 
             {/* CSV Upload */}
             <div className="space-y-2">
-              <Label>Contact List (CSV)</Label>
+              <Label className="text-[13px] font-medium text-foreground/90">Contact List (CSV)</Label>
               <div
                 className={`
-                  border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 cursor-pointer
+                  rounded-lg border border-dashed bg-white/[.02] p-6 text-center transition-all duration-150 cursor-pointer
                   ${isDragOver ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}
                 `}
                 onDragOver={(e) => {
@@ -410,7 +410,7 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
           <div className="space-y-6">
             {/* Assistant Selection */}
             <div className="space-y-2">
-              <Label>AI Assistant</Label>
+              <Label className="text-[13px] font-medium text-foreground/90">AI Assistant</Label>
               <Select value={selectedAssistant} onValueChange={setSelectedAssistant}>
                 <SelectTrigger className="transition-all duration-300">
                   <SelectValue placeholder="Choose an assistant" />
@@ -438,7 +438,7 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <Label>Parallel Calls</Label>
-                <span className="text-sm font-medium">{parallelCalls[0]}</span>
+                <span className="font-medium tabular-nums">{parallelCalls[0]}</span>
               </div>
               <Slider
                 value={parallelCalls}
@@ -457,7 +457,7 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
             <Button 
               onClick={handleStartCampaign}
               disabled={!campaignName || !selectedFile || !selectedAssistant}
-              className="w-full btn-action-primary"
+              className="h-10 w-full bg-primary font-medium text-primary-foreground hover:bg-primary-light disabled:pointer-events-none disabled:opacity-50"
               size="lg"
             >
               <Play className="w-5 h-5 mr-2" />

@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Phone, BarChart3, Settings, User, LogOut, Moon, Sun, Headphones, PhoneCall, History } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useNavigate } from "react-router-dom";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  BarChart3,
+  Settings,
+  User,
+  LogOut,
+  Moon,
+  Sun,
+  Headphones,
+  PhoneCall,
+  History,
+  PanelLeft,
+  Search,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 interface LayoutProps {
@@ -19,199 +23,158 @@ interface LayoutProps {
   onModeChange: (mode: "outbound" | "inbound" | "analytics" | "settings") => void;
 }
 
+const navigationItems = [
+  { id: "outbound" as const, label: "Outbound", icon: PhoneCall },
+  { id: "inbound" as const, label: "Inbound", icon: Headphones },
+  { id: "analytics" as const, label: "Analytics", icon: BarChart3 },
+  { id: "settings" as const, label: "Settings", icon: Settings },
+];
+
 export default function Layout({ children, currentMode, onModeChange }: LayoutProps) {
-  const [isDark, setIsDark] = useState(() => {
-    // Set dark mode as default
-    document.documentElement.classList.add("dark");
-    return true;
-  });
-  const location = useLocation();
+  const [isDark, setIsDark] = useState(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
 
   const toggleTheme = () => {
-    setIsDark(!isDark);
-    document.documentElement.classList.toggle("dark");
+    const nextIsDark = !isDark;
+    setIsDark(nextIsDark);
+    document.documentElement.dataset.theme = nextIsDark ? "dark" : "light";
   };
 
-  const navigationItems = [
-    {
-      id: "outbound" as const,
-      label: "Outbound",
-      icon: PhoneCall,
-      description: "AI Dialer & Campaigns",
-      gradient: "from-primary to-accent"
-    },
-    {
-      id: "inbound" as const,
-      label: "Inbound", 
-      icon: Headphones,
-      description: "AI Receptionist",
-      gradient: "from-secondary to-primary"
-    },
-    {
-      id: "analytics" as const,
-      label: "Analytics",
-      icon: BarChart3,
-      description: "Metrics & Reports",
-      gradient: "from-accent to-secondary"
-    },
-    {
-      id: "settings" as const,
-      label: "Settings",
-      icon: Settings,
-      description: "Config & Integrations",
-      gradient: "from-secondary to-accent"
-    }
-  ];
-
   return (
-    <div className="min-h-screen bg-background">
-      {/* Top Navigation */}
-      <header className="border-b border-border/50 bg-card/50 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-          {/* Logo & Brand */}
-          <div className="flex items-center space-x-4">
-            {/* Modern Professional Logo */}
-            <div className="relative flex items-center">
-              <div className="w-11 h-11 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center">
-                <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
-                  <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" 
-                        fill="url(#gradient1)" />
-                  <defs>
-                    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#3B82F6" />
-                      <stop offset="100%" stopColor="#8B5CF6" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </div>
+    <div className="dashboard-shell flex min-h-screen">
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 hidden h-screen shrink-0 overflow-hidden border-r border-border bg-sidebar px-3 py-4 transition-[width] duration-200 lg:flex lg:flex-col ${
+          isSidebarCollapsed ? "w-16" : "w-64"
+        }`}
+      >
+        <div className={`mb-6 flex items-center px-2 ${isSidebarCollapsed ? "justify-center" : "justify-between"}`}>
+          <div className={`flex min-w-0 items-center gap-2.5 ${isSidebarCollapsed ? "hidden" : ""}`}>
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary-light to-primary text-primary-foreground">
+              <span className="text-xs font-semibold">AI</span>
             </div>
-            
-            {/* Platform Branding */}
-            <div className="flex items-center space-x-3">
-              <div className="flex flex-col">
-                <div className="flex items-center space-x-1">
-                  <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">CallFlow</span>
-                  <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">AI</span>
-                </div>
-                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide">Communication Platform</span>
-              </div>
+            <div className="min-w-0">
+              <p className="text-sm font-medium tracking-tight">CallFlow AI</p>
+              <p className="text-[10px] font-medium uppercase tracking-[.12em] text-muted-foreground">Voice operations</p>
             </div>
           </div>
-
-          {/* Mode Navigation */}
-          <nav className="flex items-center space-x-2 bg-muted/50 rounded-xl p-1">
-            {navigationItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = currentMode === item.id;
-              
-              return (
-                <Button
-                  key={item.id}
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onModeChange(item.id)}
-                  className={`
-                    relative flex items-center space-x-2 px-4 py-2 transition-all duration-300 rounded-lg
-                    ${isActive 
-                      ? 'bg-background border-2 border-primary text-primary shadow-sm font-semibold' 
-                      : 'hover:bg-background/50 hover:border-2 hover:border-muted-foreground/30 text-muted-foreground hover:text-foreground border-2 border-transparent'
-                    }
-                  `}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span className="font-medium">{item.label}</span>
-                </Button>
-              );
-            })}
-          </nav>
-
-          {/* User Actions */}
-          <div className="flex items-center space-x-3">
-            {/* Status Badge */}
-            <Badge variant="outline" className="bg-success/10 text-success border-success/20">
-              <div className="w-2 h-2 bg-success rounded-full mr-2 animate-pulse" />
-              Online
-            </Badge>
-
-            {/* History Button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/history')}
-              className="w-9 h-9 rounded-lg hover:bg-muted/80"
-            >
-              <History className="w-4 h-4" />
-            </Button>
-
-            {/* Theme Toggle */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleTheme}
-              className="w-9 h-9 rounded-lg hover:bg-muted/80"
-            >
-              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </Button>
-
-            {/* User Menu */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 rounded-lg p-0">
-                  <div className="p-1 rounded-lg border-2 border-indigo-500 bg-indigo-500/10 hover:bg-indigo-500/20 transition-colors">
-                    <User className="w-5 h-5 text-indigo-500" />
-                  </div>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <div className="flex items-center justify-start gap-2 p-2">
-                  <div className="flex flex-col space-y-1 leading-none">
-                    <p className="font-medium">John Doe</p>
-                    <p className="w-[200px] truncate text-sm text-muted-foreground">
-                      john@company.com
-                    </p>
-                  </div>
-                </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer">
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-6 py-8">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentMode}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsSidebarCollapsed((collapsed) => !collapsed)}
+            className="icon-button border-0"
+            aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            {children}
-          </motion.div>
-        </AnimatePresence>
-      </main>
+            <PanelLeft className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <div className={`relative mb-5 ${isSidebarCollapsed ? "hidden" : ""}`}>
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+          <input
+            autoComplete="off"
+            placeholder="Search"
+            className="h-9 w-full rounded-lg border border-border bg-input pl-9 pr-14 text-sm outline-none placeholder:text-muted-foreground focus:border-primary/50 focus:ring-2 focus:ring-ring/40"
+          />
+          <kbd className="absolute right-2 top-1.5 rounded border border-border px-1.5 py-0.5 text-[10px] text-muted-foreground">⌘ K</kbd>
+        </div>
+
+        <p className={`sidebar-group-label mt-0 ${isSidebarCollapsed ? "hidden" : ""}`}>Main</p>
+        <nav className="space-y-1">
+          {navigationItems.map(({ id, label, icon: Icon }) => (
+            <Button
+              key={id}
+              variant="ghost"
+              onClick={() => onModeChange(id)}
+              title={isSidebarCollapsed ? label : undefined}
+              className={`relative flex h-9 w-full rounded-lg px-3 transition-colors duration-150 ${
+                isSidebarCollapsed ? "justify-center" : "justify-start gap-3"
+              } ${
+                currentMode === id
+                  ? "bg-primary/15 text-primary"
+                  : "text-muted-foreground hover:bg-white/[.05] hover:text-foreground"
+              }`}
+            >
+              <Icon className="h-[18px] w-[18px]" />
+              <span className={isSidebarCollapsed ? "hidden" : ""}>{label}</span>
+            </Button>
+          ))}
+        </nav>
+
+        <div className={`mt-6 space-y-3 ${isSidebarCollapsed ? "items-center" : ""}`}>
+          <div className={`rounded-lg border border-border bg-card p-3 ${isSidebarCollapsed ? "border-transparent bg-transparent px-0" : ""}`}>
+            {!isSidebarCollapsed && (
+              <>
+                <p className="text-xs font-medium">No package</p>
+                <p className="mt-1 text-xs text-muted-foreground">0 credits remaining</p>
+                <Button variant="outline" size="sm" className="mt-3 w-full">Buy credits</Button>
+              </>
+            )}
+          </div>
+
+          <div className={`flex items-center ${isSidebarCollapsed ? "justify-center" : "justify-between"}`}>
+            <Badge variant="outline" className={`status-badge border-success/25 bg-success/10 text-success ${isSidebarCollapsed ? "px-1.5" : ""}`}>
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
+              {!isSidebarCollapsed && "Online"}
+            </Badge>
+            <div className={`flex gap-1 ${isSidebarCollapsed ? "hidden" : ""}`}>
+              <Button variant="ghost" size="icon" onClick={() => navigate("/history")} className="icon-button">
+                <History className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={toggleTheme} className="icon-button">
+                {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </Button>
+            </div>
+          </div>
+
+          {!isSidebarCollapsed && (
+            <div className="border-t border-border pt-3">
+              <div className="flex items-center gap-2.5 px-1">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <User className="h-4 w-4" />
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">John Doe</p>
+                  <p className="truncate text-xs text-muted-foreground">john@company.com</p>
+                </div>
+              </div>
+              <Button variant="ghost" className="mt-2 h-9 w-full justify-start gap-3 px-2 text-muted-foreground hover:bg-white/[.05] hover:text-foreground">
+                <User className="h-4 w-4" /> Profile
+              </Button>
+              <Button variant="ghost" className="h-9 w-full justify-start gap-3 px-2 text-muted-foreground hover:bg-white/[.05] hover:text-destructive">
+                <LogOut className="h-4 w-4" /> Sign out
+              </Button>
+            </div>
+          )}
+        </div>
+      </aside>
+
+      <div className={`flex min-h-screen min-w-0 flex-1 flex-col ${isSidebarCollapsed ? "lg:ml-16" : "lg:ml-64"}`}>
+        <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between border-b border-border bg-background/95 px-6 backdrop-blur-md lg:px-8">
+          <div>
+            <h1 className="text-[16px] font-semibold tracking-tight text-foreground">
+              {navigationItems.find((item) => item.id === currentMode)?.label}
+            </h1>
+            {/* <p className="text-xs text-muted-foreground">Voice operations workspace</p> */}
+          </div>
+        </header>
+
+        <main className="min-h-0 flex-1 overflow-y-auto">
+          <div className="mx-auto max-w-[1440px] px-6 py-8 lg:px-8">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentMode}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.18, ease: [0.2, 0, 0, 1] }}
+              >
+                {children}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
-
-
-
-
-
-

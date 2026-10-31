@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Phone, TrendingUp, Users, AlertTriangle, PhoneCall, Filter, Download } from "lucide-react";
+import { Phone, TrendingUp, DollarSign, AlertTriangle, PhoneCall, Filter, Download, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -68,14 +68,14 @@ export default function Outbound() {
     { 
       title: "Total Cost", 
       value: "$162.35", 
-      icon: Users,
+      icon: DollarSign,
       iconStyle: "bordered" as const,
       iconColor: "text-amber-500"
     },
     { 
       title: "Avg. Duration", 
       value: "3m 45s", 
-      icon: AlertTriangle,
+      icon: Clock,
       iconStyle: "bordered" as const,
       iconColor: "text-cyan-500"
     }
@@ -102,18 +102,18 @@ export default function Outbound() {
                 <SelectItem value="lead-qualifier">Lead Qualifier</SelectItem>
               </SelectContent>
             </Select>
-            <Button size="sm" className="btn-action-primary">
+            <Button size="sm" variant="outline" className="btn-professional-outline">
               <Filter className="w-4 h-4 mr-2" />
               Filters
             </Button>
-            <Button size="sm" className="btn-action-primary">
+            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary-light">
               <Download className="w-4 h-4 mr-2" />
               Export
             </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 items-stretch gap-4 md:grid-cols-3 lg:grid-cols-6">
           {allStats.map((stat, index) => (
             <div key={stat.title} style={{ animationDelay: `${index * 100}ms` }} className="animate-slide-up">
               <StatsCard {...stat} />
