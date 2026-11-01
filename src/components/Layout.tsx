@@ -6,16 +6,14 @@ import {
   Settings,
   User,
   LogOut,
-  Moon,
-  Sun,
   Headphones,
   PhoneCall,
   History,
   PanelLeft,
   Search,
+  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -27,19 +25,11 @@ const navigationItems = [
   { id: "outbound" as const, label: "Outbound", icon: PhoneCall },
   { id: "inbound" as const, label: "Inbound", icon: Headphones },
   { id: "analytics" as const, label: "Analytics", icon: BarChart3 },
-  { id: "settings" as const, label: "Settings", icon: Settings },
 ];
 
 export default function Layout({ children, currentMode, onModeChange }: LayoutProps) {
-  const [isDark, setIsDark] = useState(true);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
-
-  const toggleTheme = () => {
-    const nextIsDark = !isDark;
-    setIsDark(nextIsDark);
-    document.documentElement.dataset.theme = nextIsDark ? "dark" : "light";
-  };
 
   return (
     <div className="dashboard-shell flex min-h-screen">
@@ -50,11 +40,11 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
       >
         <div className={`mb-6 flex items-center px-2 ${isSidebarCollapsed ? "justify-center" : "justify-between"}`}>
           <div className={`flex min-w-0 items-center gap-2.5 ${isSidebarCollapsed ? "hidden" : ""}`}>
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary-light to-primary text-primary-foreground">
-              <span className="text-xs font-semibold">AI</span>
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <Zap className="h-5 w-5" strokeWidth={1.7} />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium tracking-tight">CallFlow AI</p>
+              <p className="text-sm font-medium tracking-tight">CallFlow</p>
               <p className="text-[10px] font-medium uppercase tracking-[.12em] text-muted-foreground">Voice operations</p>
             </div>
           </div>
@@ -79,6 +69,22 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
           <kbd className="absolute right-2 top-1.5 rounded border border-border px-1.5 py-0.5 text-[10px] text-muted-foreground">⌘ K</kbd>
         </div>
 
+        <Button
+          variant="ghost"
+          onClick={() => {
+            window.location.href = "http://127.0.0.1:5000/dashboard";
+          }}
+          title={isSidebarCollapsed ? "Start AI Calling Campaign" : undefined}
+          className={`mb-5 h-9 w-full rounded-lg border border-primary/60 bg-primary/10 text-primary hover:bg-primary/15 ${
+            isSidebarCollapsed ? "justify-center px-0" : "justify-start gap-3 px-3"
+          }`}
+        >
+          <Zap className="h-[18px] w-[18px] shrink-0" strokeWidth={1.7} />
+          <span className={isSidebarCollapsed ? "hidden" : "truncate text-xs font-medium"}>
+            Start AI Calling Campaign
+          </span>
+        </Button>
+
         <p className={`sidebar-group-label mt-0 ${isSidebarCollapsed ? "hidden" : ""}`}>Main</p>
         <nav className="space-y-1">
           {navigationItems.map(({ id, label, icon: Icon }) => (
@@ -101,44 +107,37 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
           ))}
         </nav>
 
-        <div className={`mt-6 space-y-3 ${isSidebarCollapsed ? "items-center" : ""}`}>
-          <div className={`rounded-lg border border-border bg-card p-3 ${isSidebarCollapsed ? "border-transparent bg-transparent px-0" : ""}`}>
-            {!isSidebarCollapsed && (
-              <>
-                <p className="text-xs font-medium">No package</p>
-                <p className="mt-1 text-xs text-muted-foreground">0 credits remaining</p>
-                <Button variant="outline" size="sm" className="mt-3 w-full">Buy credits</Button>
-              </>
-            )}
-          </div>
-
-          <div className={`flex items-center ${isSidebarCollapsed ? "justify-center" : "justify-between"}`}>
-            <Badge variant="outline" className={`status-badge border-success/25 bg-success/10 text-success ${isSidebarCollapsed ? "px-1.5" : ""}`}>
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
-              {!isSidebarCollapsed && "Online"}
-            </Badge>
-            <div className={`flex gap-1 ${isSidebarCollapsed ? "hidden" : ""}`}>
-              <Button variant="ghost" size="icon" onClick={() => navigate("/history")} className="icon-button">
-                <History className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" onClick={toggleTheme} className="icon-button">
-                {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              </Button>
-            </div>
-          </div>
+        <div className="mt-2 flex min-h-0 flex-1 flex-col space-y-1">
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/history")}
+            title={isSidebarCollapsed ? "Campaign History" : undefined}
+            className={`flex h-9 w-full rounded-lg px-3 text-muted-foreground hover:bg-white/[.05] hover:text-foreground ${
+              isSidebarCollapsed ? "justify-center" : "justify-start gap-3"
+            }`}
+          >
+            <History className="h-[18px] w-[18px]" />
+            <span className={isSidebarCollapsed ? "hidden" : ""}>Campaign History</span>
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={() => onModeChange("settings")}
+            title={isSidebarCollapsed ? "Settings" : undefined}
+            className={`flex h-9 w-full rounded-lg px-3 text-muted-foreground hover:bg-white/[.05] hover:text-foreground ${
+              isSidebarCollapsed ? "justify-center" : "justify-start gap-3"
+            }`}
+          >
+            <Settings className="h-[18px] w-[18px]" />
+            <span className={isSidebarCollapsed ? "hidden" : ""}>Settings</span>
+          </Button>
 
           {!isSidebarCollapsed && (
-            <div className="border-t border-border pt-3">
-              <div className="flex items-center gap-2.5 px-1">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <User className="h-4 w-4" />
-                </div>
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium">John Doe</p>
-                  <p className="truncate text-xs text-muted-foreground">john@company.com</p>
-                </div>
-              </div>
-              <Button variant="ghost" className="mt-2 h-9 w-full justify-start gap-3 px-2 text-muted-foreground hover:bg-white/[.05] hover:text-foreground">
+            <div className="pt-1">
+              <Button
+                variant="ghost"
+                onClick={() => navigate("/profile")}
+                className="h-9 w-full justify-start gap-3 px-2 text-muted-foreground hover:bg-white/[.05] hover:text-foreground"
+              >
                 <User className="h-4 w-4" /> Profile
               </Button>
               <Button variant="ghost" className="h-9 w-full justify-start gap-3 px-2 text-muted-foreground hover:bg-white/[.05] hover:text-destructive">
@@ -146,6 +145,14 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
               </Button>
             </div>
           )}
+
+          <div className={`mt-auto pt-4 ${isSidebarCollapsed ? "hidden" : ""}`}>
+            <div className="rounded-lg border border-border bg-card p-3">
+              <p className="text-xs font-medium">No package</p>
+              <p className="mt-1 text-xs text-muted-foreground">0 credits remaining</p>
+              <Button variant="outline" size="sm" className="mt-3 w-full">Buy credits</Button>
+            </div>
+          </div>
         </div>
       </aside>
 

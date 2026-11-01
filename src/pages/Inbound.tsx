@@ -19,6 +19,7 @@ import {
 import StatsCard from "@/components/dashboard/StatsCard";
 import { useNavigate } from "react-router-dom";
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
+import { useAssistants } from "@/lib/assistants";
 
 export default function Inbound() {
   const navigate = useNavigate();
@@ -26,19 +27,15 @@ export default function Inbound() {
   const [selectedAssistant, setSelectedAssistant] = useState("");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [campaignToDelete, setCampaignToDelete] = useState<{id: string, assistant: string} | null>(null);
-  const [activeCampaigns, setActiveCampaigns] = useState([
-    {
-      id: "1",
-      assistant: "Customer Support Pro",
-      number: "+1 (555) 123-4567",
-      status: "running" as "running" | "paused"
-    }
-  ]);
+  const [activeCampaigns, setActiveCampaigns] = useState<
+    { id: string; assistant: string; number: string; status: "running" | "paused" }[]
+  >([]);
   const [buttonStates, setButtonStates] = useState<{[key: string]: {action: string, timestamp: number}}>({});
   const [campaignStates, setCampaignStates] = useState<{[key: string]: {
     status: "running" | "paused", 
     activeAction: "none" | "pause" | "resume" | "live"
   }}>({});
+  const { assistants: inboundAssistants, loading: assistantsLoading, error: assistantsError } = useAssistants("inbound");
 
   // Initialize existing campaigns with default state
   useEffect(() => {
@@ -197,14 +194,7 @@ export default function Inbound() {
     }
   ];
 
-  const allAssistants = [
-    { id: "customer-support", name: "Customer Support Pro", type: "Support", number: "+1 (555) 123-4567" },
-    { id: "sales-assistant", name: "Sales Assistant", type: "Sales", number: "+1 (555) 987-6543" },
-    { id: "tech-support", name: "Technical Support", type: "Technical", number: "+1 (555) 456-7890" },
-    { id: "billing-support", name: "Billing Support", type: "Billing", number: "+1 (555) 234-5678" }
-  ];
-
-  const availableAssistants = allAssistants.filter(assistant => 
+  const availableAssistants = inboundAssistants.filter(assistant => 
     !activeCampaigns.some(campaign => campaign.assistant === assistant.name)
   );
 
@@ -551,6 +541,11 @@ export default function Inbound() {
               <p className="text-xs text-muted-foreground">
                 Each assistant will be assigned their dedicated phone number
               </p>
+              {assistantsLoading && <p className="text-xs text-muted-foreground">Loading assistants…</p>}
+              {assistantsError && <p className="text-xs text-destructive">{assistantsError}</p>}
+              {!assistantsLoading && !assistantsError && availableAssistants.length === 0 && (
+                <p className="text-xs text-muted-foreground">No inbound assistants with a name and phone number were found.</p>
+              )}
             </div>
         </div>
       </Card>

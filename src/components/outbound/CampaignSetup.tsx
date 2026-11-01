@@ -20,6 +20,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
+import { useAssistants, type Assistant } from "@/lib/assistants";
 
 interface CampaignSetupProps {
   onCampaignStart: (config: any) => void;
@@ -29,12 +30,7 @@ interface CampaignSetupProps {
 export default function CampaignSetup({ onCampaignStart, activeCampaign }: CampaignSetupProps) {
   const navigate = useNavigate();
   
-  const assistants = [
-    { id: "1", name: "Sales Assistant Pro", type: "Sales", status: "active", number: "+1 (555) 123-4567" },
-    { id: "2", name: "Customer Support", type: "Support", status: "active", number: "+1 (555) 987-6543" },
-    { id: "3", name: "Lead Qualifier", type: "Qualification", status: "active", number: "+1 (555) 456-7890" },
-    { id: "4", name: "Appointment Setter", type: "Scheduling", status: "active", number: "+1 (555) 234-5678" }
-  ];
+  const { assistants, loading: assistantsLoading, error: assistantsError } = useAssistants("outbound");
 
   const [campaignName, setCampaignName] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -42,7 +38,7 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
   const [parallelCalls, setParallelCalls] = useState([3]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [activeCampaigns, setActiveCampaigns] = useState<any[]>([]);
-  const [availableAssistants, setAvailableAssistants] = useState(assistants);
+  const [availableAssistants, setAvailableAssistants] = useState<Assistant[]>([]);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [campaignToDelete, setCampaignToDelete] = useState<{id: string, name: string} | null>(null);
   const [buttonStates, setButtonStates] = useState<{[key: string]: {action: string, timestamp: number}}>({});
@@ -65,6 +61,10 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
       }));
     }
   }, [activeCampaign]);
+
+  useEffect(() => {
+    setAvailableAssistants(assistants);
+  }, [assistants]);
 
   const handleFileUpload = (file: File) => {
     setSelectedFile(file);
@@ -332,7 +332,7 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
         {campaignsToShow.length > 0 && (
           <Badge variant="outline" className="status-badge border-success/25 bg-success/10 text-success">
             <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
-            {campaignsToShow.length} Campaign{campaignsToShow.length > 1 ? 's' : ''} Active
+            {campaignsToShow.length} Campaign{campaignsToShow.length > 1 ? 's' : ''}
           </Badge>
         )}
       </div>
@@ -429,8 +429,10 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
                   ))}
                 </SelectContent>
               </Select>
-              {availableAssistants.length === 0 && (
-                <p className="text-xs text-muted-foreground">All assistants are currently assigned to active campaigns</p>
+              {assistantsLoading && <p className="text-xs text-muted-foreground">Loading assistants…</p>}
+              {assistantsError && <p className="text-xs text-destructive">{assistantsError}</p>}
+              {!assistantsLoading && !assistantsError && availableAssistants.length === 0 && (
+                <p className="text-xs text-muted-foreground">No outbound assistants with a name and phone number were found.</p>
               )}
             </div>
 

@@ -134,9 +134,9 @@ export default function History() {
 
   if (selectedCampaign) {
     return (
-      <div className="p-6 mx-4 space-y-8 animate-slide-up">
+      <div className="mx-auto max-w-[1440px] space-y-6 p-6 lg:p-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8 px-4">
+        <div className="flex flex-col items-start justify-between gap-5 lg:flex-row lg:items-center">
           <div className="flex items-center space-x-6">
             <Button 
               variant="ghost" 
@@ -148,7 +148,7 @@ export default function History() {
               Back to Campaigns
             </Button>
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold font-poppins text-gradient-primary">
+              <h2 className="text-[22px] font-semibold tracking-tight text-foreground">
                 {selectedCampaign.name} - Call Logs
               </h2>
               <p className="text-muted-foreground">
@@ -168,11 +168,11 @@ export default function History() {
                 <SelectItem value="failed">Failed Only</SelectItem>
               </SelectContent>
             </Select>
-            <Button size="sm" className="btn-professional-outline">
+            <Button size="sm" variant="outline" className="btn-professional-outline">
               <Filter className="w-4 h-4 mr-2" />
               Filters
             </Button>
-            <Button size="sm" className="btn-professional-outline">
+            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary-light">
               <Download className="w-4 h-4 mr-2" />
               Export
             </Button>
@@ -181,7 +181,7 @@ export default function History() {
 
         {/* Call Logs Table */}
         <div className="px-4">
-          <Card className="p-8 card-premium">
+          <Card className="card-premium p-6">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -243,11 +243,11 @@ export default function History() {
   }
 
   return (
-    <div className="p-6 mx-4 space-y-8 animate-slide-up">
+    <div className="mx-auto max-w-[1440px] space-y-6 p-6 lg:p-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8 px-4">
+      <div className="flex flex-col items-start justify-between gap-5 lg:flex-row lg:items-center">
         <div className="space-y-2">
-          <h2 className="text-2xl font-bold font-poppins text-gradient-primary">
+          <h2 className="text-[22px] font-semibold tracking-tight text-foreground">
             Campaign History
           </h2>
           <p className="text-muted-foreground">View all inbound and outbound campaign records</p>
@@ -277,12 +277,12 @@ export default function History() {
       </div>
 
       {/* Campaign Lists */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-4">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Outbound Campaigns */}
         <div className="space-y-6">
-          <div className="px-2">
-            <h3 className="text-lg font-semibold flex items-center mb-4">
-              <Phone className="w-5 h-5 mr-2 text-primary" />
+          <div>
+            <h3 className="mb-4 flex items-center text-base font-medium">
+              <Phone className="mr-2 h-4 w-4 text-primary" />
               Outbound Campaigns ({outboundCampaigns.length})
             </h3>
           </div>
@@ -291,13 +291,13 @@ export default function History() {
             {outboundCampaigns.map((campaign) => (
               <Card 
                 key={campaign.id} 
-                className="p-6 m-2 card-premium hover:border-blue-500 hover:border-2 transition-all duration-300 cursor-pointer"
+                className="card-premium cursor-pointer p-6 transition-colors duration-150 hover:border-primary/50"
                 onClick={() => handleCampaignClick(campaign)}
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 border-2 border-blue-500 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                      <Phone className="w-6 h-6 text-blue-500" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-white/[.05]">
+                      <Phone className="h-5 w-5 text-primary" />
                     </div>
                     <div className="space-y-1">
                       <p className="font-medium text-base">{campaign.name}</p>
@@ -329,9 +329,9 @@ export default function History() {
 
         {/* Inbound Campaigns */}
         <div className="space-y-6">
-          <div className="px-2">
-            <h3 className="text-lg font-semibold flex items-center mb-4">
-              <Headphones className="w-5 h-5 mr-2 text-secondary" />
+          <div>
+            <h3 className="mb-4 flex items-center text-base font-medium">
+              <Headphones className="mr-2 h-4 w-4 text-primary" />
               Inbound Campaigns ({inboundCampaigns.length})
             </h3>
           </div>
@@ -340,13 +340,13 @@ export default function History() {
             {inboundCampaigns.map((campaign) => (
               <Card 
                 key={campaign.id} 
-                className="p-6 m-2 card-premium hover:border-blue-500 hover:border-2 transition-all duration-300 cursor-pointer"
+                className="card-premium cursor-pointer p-6 transition-colors duration-150 hover:border-primary/50"
                 onClick={() => handleCampaignClick(campaign)}
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 border-2 border-emerald-500 bg-emerald-500/10 rounded-lg flex items-center justify-center">
-                      <Headphones className="w-6 h-6 text-emerald-500" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-white/[.05]">
+                      <Headphones className="h-5 w-5 text-primary" />
                     </div>
                     <div className="space-y-1">
                       <p className="font-medium text-base">{campaign.name}</p>
