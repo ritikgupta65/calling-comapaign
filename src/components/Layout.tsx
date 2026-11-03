@@ -5,7 +5,6 @@ import {
   BarChart3,
   Settings,
   User,
-  LogOut,
   Headphones,
   PhoneCall,
   History,
@@ -45,12 +44,13 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
             </div>
             <div className="min-w-0">
               <p className="text-sm font-medium tracking-tight">CallFlow</p>
-              <p className="text-[10px] font-medium uppercase tracking-[.12em] text-muted-foreground">Voice operations</p>
+              {/* <p className="text-[10px] font-medium uppercase tracking-[.12em] text-muted-foreground">Voice operations</p> */}
             </div>
           </div>
           <Button
             variant="ghost"
             size="icon"
+            type="button"
             onClick={() => setIsSidebarCollapsed((collapsed) => !collapsed)}
             className="icon-button border-0"
             aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -59,7 +59,7 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
           </Button>
         </div>
 
-        <div className={`relative mb-5 ${isSidebarCollapsed ? "hidden" : ""}`}>
+        {/* <div className={`relative mb-5 ${isSidebarCollapsed ? "hidden" : ""}`}>
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
           <input
             autoComplete="off"
@@ -67,12 +67,13 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
             className="h-9 w-full rounded-lg border border-border bg-input pl-9 pr-14 text-sm outline-none placeholder:text-muted-foreground focus:border-primary/50 focus:ring-2 focus:ring-ring/40"
           />
           <kbd className="absolute right-2 top-1.5 rounded border border-border px-1.5 py-0.5 text-[10px] text-muted-foreground">⌘ K</kbd>
-        </div>
+        </div> */}
 
         <Button
           variant="ghost"
+          type="button"
           onClick={() => {
-            window.location.href = "http://127.0.0.1:5000/dashboard";
+            window.location.href = "http://127.0.0.1:5000/assistent";
           }}
           title={isSidebarCollapsed ? "Start AI Calling Campaign" : undefined}
           className={`mb-5 h-9 w-full rounded-lg border border-primary/60 bg-primary/10 text-primary hover:bg-primary/15 ${
@@ -91,6 +92,7 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
             <Button
               key={id}
               variant="ghost"
+              type="button"
               onClick={() => onModeChange(id)}
               title={isSidebarCollapsed ? label : undefined}
               className={`relative flex h-9 w-full rounded-lg px-3 transition-colors duration-150 ${
@@ -110,6 +112,7 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
         <div className="mt-2 flex min-h-0 flex-1 flex-col space-y-1">
           <Button
             variant="ghost"
+            type="button"
             onClick={() => navigate("/history")}
             title={isSidebarCollapsed ? "Campaign History" : undefined}
             className={`flex h-9 w-full rounded-lg px-3 text-muted-foreground hover:bg-white/[.05] hover:text-foreground ${
@@ -121,6 +124,7 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
           </Button>
           <Button
             variant="ghost"
+            type="button"
             onClick={() => onModeChange("settings")}
             title={isSidebarCollapsed ? "Settings" : undefined}
             className={`flex h-9 w-full rounded-lg px-3 text-muted-foreground hover:bg-white/[.05] hover:text-foreground ${
@@ -135,13 +139,11 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
             <div className="pt-1">
               <Button
                 variant="ghost"
+                type="button"
                 onClick={() => navigate("/profile")}
                 className="h-9 w-full justify-start gap-3 px-2 text-muted-foreground hover:bg-white/[.05] hover:text-foreground"
               >
                 <User className="h-4 w-4" /> Profile
-              </Button>
-              <Button variant="ghost" className="h-9 w-full justify-start gap-3 px-2 text-muted-foreground hover:bg-white/[.05] hover:text-destructive">
-                <LogOut className="h-4 w-4" /> Sign out
               </Button>
             </div>
           )}
@@ -164,6 +166,22 @@ export default function Layout({ children, currentMode, onModeChange }: LayoutPr
             </h1>
             {/* <p className="text-xs text-muted-foreground">Voice operations workspace</p> */}
           </div>
+          <nav className="flex items-center gap-1 lg:hidden" aria-label="Main navigation">
+            {navigationItems.map(({ id, label, icon: Icon }) => (
+              <Button
+                key={id}
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => onModeChange(id)}
+                aria-current={currentMode === id ? "page" : undefined}
+                className={currentMode === id ? "bg-primary/15 text-primary" : "text-muted-foreground"}
+              >
+                <Icon className="h-4 w-4" />
+                <span className="sr-only sm:not-sr-only">{label}</span>
+              </Button>
+            ))}
+          </nav>
         </header>
 
         <main className="min-h-0 flex-1 overflow-y-auto">

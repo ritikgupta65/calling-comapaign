@@ -6,8 +6,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import StatsCard from "@/components/dashboard/StatsCard";
 import CampaignSetup from "@/components/outbound/CampaignSetup";
+import { useAssistants } from "@/lib/assistants";
 
 export default function Outbound() {
+  const { assistants } = useAssistants("outbound");
+
   const handleCampaignStart = (config: any) => {
     console.log("Starting campaign with config:", config);
     // Campaign start logic would go here
@@ -85,9 +88,11 @@ export default function Outbound() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all-assistants">All Assistants</SelectItem>
-                <SelectItem value="sales-pro">Sales Assistant Pro</SelectItem>
-                <SelectItem value="customer-support">Customer Support</SelectItem>
-                <SelectItem value="lead-qualifier">Lead Qualifier</SelectItem>
+                {assistants.map((assistant) => (
+                  <SelectItem key={assistant.id} value={assistant.id}>
+                    {assistant.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Button size="sm" variant="outline" className="btn-professional-outline">

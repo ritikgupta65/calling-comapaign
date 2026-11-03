@@ -8,41 +8,23 @@ export interface Assistant {
   direction?: "inbound" | "outbound";
 }
 
-interface VoiceSession {
+interface DatabaseAssistant {
   id: string;
-  config: unknown;
-  metadata: unknown;
+  name: string;
+  user_id: string;
 }
 
 const apiUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const publishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
+const assistantsUserId = import.meta.env.VITE_ASSISTANTS_USER_ID as string | undefined;
+const assistantPhoneNumber = import.meta.env.VITE_ASSISTANT_PHONE_NUMBER as string | undefined;
 
-function findString(source: unknown, keys: string[]): string | undefined {
-  if (!source || typeof source !== "object") return undefined;
-  for (const [key, value] of Object.entries(source)) {
-    if (keys.includes(key.toLowerCase()) && typeof value === "string" && value.trim()) {
-      return value.trim();
-    }
-    const nested = findString(value, keys);
-    if (nested) return nested;
-  }
-  return undefined;
-}
-
-function mapSession(session: VoiceSession): Assistant | null {
-  const source = { config: session.config, metadata: session.metadata };
-  const name = findString(source, ["name", "assistant_name", "assistantname", "agent_name", "agentname"]);
-  const number = findString(source, ["number", "phone", "phone_number", "phonenumber", "phone_number_value"]);
-  const direction = findString(source, ["direction", "call_direction", "type"]);
-
-  if (!name || !number) return null;
-
+function mapAssistant(assistant: DatabaseAssistant): Assistant {
   return {
-    id: session.id,
-    name,
-    number,
-    type: "Voice assistant",
-    direction: direction === "inbound" || direction === "outbound" ? direction : undefined,
+    id: assistant.id,
+    name: assistant.name,
+    number: assistantPhoneNumber ?? "",
+    type: "Mobile number",
   };
 }
 
@@ -55,14 +37,19 @@ export function useAssistants(direction: "inbound" | "outbound") {
     let cancelled = false;
 
     async function loadAssistants() {
-      if (!apiUrl || !publishableKey) {
-        setError("Supabase configuration is missing.");
+      if (!apiUrl || !publishableKey || !assistantsUserId) {
+        setError("Supabase assistant configuration is missing.");
         setLoading(false);
         return;
       }
 
       try {
-        const response = await fetch(`${apiUrl}/rest/v1/voice_sessions?select=id,config,metadata&order=created_at.desc`, {
+        const params = new URLSearchParams({
+          select: "id,name,user_id",
+          user_id: `eq.${assistantsUserId}`,
+          order: "name.asc",
+        });
+        const response = await fetch(`${apiUrl}/rest/v1/assistants?${params.toString()}`, {
           headers: {
             apikey: publishableKey,
             Authorization: `Bearer ${publishableKey}`,
@@ -70,11 +57,8 @@ export function useAssistants(direction: "inbound" | "outbound") {
         });
         if (!response.ok) throw new Error(`Supabase request failed (${response.status}).`);
 
-        const sessions = (await response.json()) as VoiceSession[];
-        const mapped = sessions
-          .map(mapSession)
-          .filter((assistant): assistant is Assistant => Boolean(assistant))
-          .filter((assistant) => !assistant.direction || assistant.direction === direction);
+        const databaseAssistants = (await response.json()) as DatabaseAssistant[];
+        const mapped = databaseAssistants.map(mapAssistant);
 
         if (!cancelled) setAssistants(mapped);
       } catch (loadError) {

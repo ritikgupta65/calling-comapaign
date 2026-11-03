@@ -48,8 +48,8 @@ export default function Settings() {
           {/* API Integrations */}
           <Card className="p-6 card-premium">
             <div className="flex items-center space-x-3 mb-6">
-              <div className="p-2 border-2 border-blue-500 bg-blue-500/10 rounded-lg">
-                <Key className="w-5 h-5 text-blue-500" />
+              <div className="p-2 border border-border bg-white/[.05] rounded-lg">
+                <Key className="w-5 h-5 text-muted-foreground" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold">API Integrations</h3>
@@ -62,8 +62,8 @@ export default function Settings() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 border-2 border-purple-500 bg-purple-500/10 rounded-lg flex items-center justify-center">
-                      <span className="text-purple-500 font-bold text-sm">V</span>
+                    <div className="w-10 h-10 border border-border bg-white/[.05] rounded-lg flex items-center justify-center">
+                      <span className="text-muted-foreground font-bold text-sm">V</span>
                     </div>
                     <div>
                       <h4 className="font-medium">Vapi AI</h4>
@@ -73,8 +73,8 @@ export default function Settings() {
                   <Badge 
                     variant="outline" 
                     className={connectionStatus.vapi 
-                      ? "bg-success/10 text-success border-success/20" 
-                      : "bg-destructive/10 text-destructive border-destructive/20"
+                      ? "bg-transparent text-success border-success/20" 
+                      : "bg-transparent text-destructive border-destructive/20"
                     }
                   >
                     {connectionStatus.vapi ? (
@@ -121,8 +121,8 @@ export default function Settings() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 border-2 border-teal-500 bg-teal-500/10 rounded-lg flex items-center justify-center">
-                      <Phone className="w-5 h-5 text-teal-500" />
+                    <div className="w-10 h-10 border border-border bg-white/[.05] rounded-lg flex items-center justify-center">
+                      <Phone className="w-5 h-5 text-muted-foreground" />
                     </div>
                     <div>
                       <h4 className="font-medium">Twilio</h4>
@@ -132,8 +132,8 @@ export default function Settings() {
                   <Badge 
                     variant="outline" 
                     className={connectionStatus.twilio 
-                      ? "bg-success/10 text-success border-success/20" 
-                      : "bg-destructive/10 text-destructive border-destructive/20"
+                      ? "bg-transparent text-success border-success/20" 
+                      : "bg-transparent text-destructive border-destructive/20"
                     }
                   >
                     {connectionStatus.twilio ? (
@@ -190,8 +190,8 @@ export default function Settings() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 border-2 border-amber-500 bg-amber-500/10 rounded-lg flex items-center justify-center">
-                      <Webhook className="w-5 h-5 text-amber-500" />
+                    <div className="w-10 h-10 border border-border bg-white/[.05] rounded-lg flex items-center justify-center">
+                      <Webhook className="w-5 h-5 text-muted-foreground" />
                     </div>
                     <div>
                       <h4 className="font-medium">N8N Automation</h4>
@@ -201,8 +201,8 @@ export default function Settings() {
                   <Badge 
                     variant="outline" 
                     className={connectionStatus.n8n 
-                      ? "bg-success/10 text-success border-success/20" 
-                      : "bg-destructive/10 text-destructive border-destructive/20"
+                      ? "bg-transparent text-success border-success/20" 
+                      : "bg-transparent text-destructive border-destructive/20"
                     }
                   >
                     {connectionStatus.n8n ? (
@@ -271,7 +271,7 @@ export default function Settings() {
                 </div>
                 <div>
                   <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" type="email" defaultValue="john@company.com" />
+                  <Input id="email" type="email" defaultValue="guptaritik67856@gmail.com" />
                 </div>
               </div>
               
@@ -359,7 +359,7 @@ export default function Settings() {
 
             <div className="space-y-4">
               {[
-                { name: "John Doe", email: "john@company.com", role: "Admin", status: "Active" },
+                { name: "John Doe", email: "guptaritik67856@gmail.com", role: "Admin", status: "Active" },
                 { name: "Jane Smith", email: "jane@company.com", role: "User", status: "Active" },
                 { name: "Mike Johnson", email: "mike@company.com", role: "User", status: "Pending" }
               ].map((member, index) => (
@@ -381,8 +381,8 @@ export default function Settings() {
                     <Badge 
                       variant="outline"
                       className={member.status === "Active" 
-                        ? "bg-success/10 text-success border-success/20"
-                        : "bg-warning/10 text-warning border-warning/20"
+                        ? "bg-transparent text-success border-success/20"
+                        : "bg-transparent text-warning border-warning/20"
                       }
                     >
                       {member.status}

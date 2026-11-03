@@ -4,8 +4,11 @@ import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import StatsCard from "@/components/dashboard/StatsCard";
+import { useAssistants } from "@/lib/assistants";
 
 export default function Analytics() {
+  const { assistants } = useAssistants("outbound");
+
   const stats = [
     {
       title: "Total Calls",
@@ -59,12 +62,12 @@ export default function Analytics() {
     { label: "Avg. Wait Time", value: "12s", change: "-5s" }
   ];
 
-  const assistantPerformance = [
-    { name: "Sales Assistant Pro", calls: 856, success: "72%", cost: "$423.20" },
-    { name: "Customer Support", calls: 643, success: "89%", cost: "$321.50" },
-    { name: "Lead Qualifier", calls: 512, success: "65%", cost: "$256.80" },
-    { name: "Appointment Setter", calls: 387, success: "78%", cost: "$193.40" }
-  ];
+  const assistantPerformance = assistants.map((assistant, index) => ({
+    name: assistant.name,
+    calls: [856, 643, 512, 387][index % 4],
+    success: ["72%", "89%", "65%", "78%"][index % 4],
+    cost: ["$423.20", "$321.50", "$256.80", "$193.40"][index % 4],
+  }));
 
   return (
     <div className="space-y-8 animate-slide-up">
@@ -85,9 +88,11 @@ export default function Analytics() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all-assistants">All Assistants</SelectItem>
-              <SelectItem value="sales">Sales Assistant</SelectItem>
-              <SelectItem value="support">Customer Support</SelectItem>
-              <SelectItem value="qualifier">Lead Qualifier</SelectItem>
+              {assistants.map((assistant) => (
+                <SelectItem key={assistant.id} value={assistant.id}>
+                  {assistant.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Button variant="outline" className="btn-ghost-premium">
@@ -115,8 +120,8 @@ export default function Analytics() {
         {/* Outbound Metrics */}
         <Card className="p-6 card-premium">
           <div className="flex items-center space-x-3 mb-6">
-            <div className="p-2 border-2 border-purple-500 bg-purple-500/10 rounded-lg">
-              <BarChart3 className="w-5 h-5 text-purple-500" />
+            <div className="p-2 border border-border bg-white/[.05] rounded-lg">
+            <BarChart3 className="w-5 h-5 text-muted-foreground" />
             </div>
             <div>
               <h3 className="text-lg font-semibold">Outbound Performance</h3>
@@ -140,8 +145,8 @@ export default function Analytics() {
         {/* Inbound Metrics */}
         <Card className="p-6 card-premium">
           <div className="flex items-center space-x-3 mb-6">
-            <div className="p-2 border-2 border-teal-500 bg-teal-500/10 rounded-lg">
-              <TrendingUp className="w-5 h-5 text-teal-500" />
+            <div className="p-2 border border-border bg-white/[.05] rounded-lg">
+              <TrendingUp className="w-5 h-5 text-muted-foreground" />
             </div>
             <div>
               <h3 className="text-lg font-semibold">Inbound Performance</h3>
@@ -169,8 +174,8 @@ export default function Analytics() {
       <Card className="p-6 card-premium">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
-            <div className="p-2 border-2 border-amber-500 bg-amber-500/10 rounded-lg">
-              <BarChart3 className="w-5 h-5 text-amber-500" />
+            <div className="p-2 border border-border bg-white/[.05] rounded-lg">
+              <BarChart3 className="w-5 h-5 text-muted-foreground" />
             </div>
             <div>
               <h3 className="text-lg font-semibold">Assistant Performance</h3>
@@ -198,8 +203,8 @@ export default function Analytics() {
                 <tr key={assistant.name} className="border-b border-border/25 hover:bg-muted/25 transition-colors">
                   <td className="py-4 px-4">
                     <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 border-2 border-blue-500 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                        <span className="text-blue-500 text-sm font-bold">
+                      <div className="w-8 h-8 border border-border bg-white/[.05] rounded-lg flex items-center justify-center">
+                        <span className="text-muted-foreground text-sm font-bold">
                           {assistant.name.split(' ').map(word => word[0]).join('')}
                         </span>
                       </div>
@@ -221,8 +226,8 @@ export default function Analytics() {
       {/* Chart Placeholder */}
       <Card className="p-6 card-premium">
         <div className="flex items-center space-x-3 mb-6">
-          <div className="p-2 border-2 border-emerald-500 bg-emerald-500/10 rounded-lg">
-            <TrendingUp className="w-5 h-5 text-emerald-500" />
+          <div className="p-2 border border-border bg-white/[.05] rounded-lg">
+            <TrendingUp className="w-5 h-5 text-muted-foreground" />
           </div>
           <div>
             <h3 className="text-lg font-semibold">Call Volume Trends</h3>

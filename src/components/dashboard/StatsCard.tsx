@@ -67,7 +67,7 @@ export default function StatsCard({
         
         {change && (
           <p className="flex items-center gap-2 text-xs">
-            <span className={`rounded-md px-1.5 py-0.5 font-medium ${changeColor} ${change.type === "increase" ? "bg-success/10" : change.type === "decrease" ? "bg-destructive/10" : "bg-muted"}`}>
+            <span className={`font-medium ${changeColor}`}>
               {change.type === "increase" ? "↗" : change.type === "decrease" ? "↘" : "→"}
               {" "}{change.value.replace(/ from last week$/, "")}
             </span>

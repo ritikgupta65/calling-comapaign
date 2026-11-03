@@ -78,9 +78,9 @@ export default function LiveReport() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "connected": return "bg-success/10 text-success border-success/20";
-      case "failed": return "bg-destructive/10 text-destructive border-destructive/20";
-      case "spam": return "bg-warning/10 text-warning border-warning/20";
+      case "connected": return "bg-transparent text-success border-success/20";
+      case "failed": return "bg-transparent text-destructive border-destructive/20";
+      case "spam": return "bg-transparent text-warning border-warning/20";
       case "calling": return "bg-primary/10 text-primary border-primary/20";
       default: return "bg-muted/10 text-muted-foreground border-muted/20";
     }
@@ -192,7 +192,7 @@ export default function LiveReport() {
           
           <Card className="p-4 card-premium">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-success/10 rounded-lg">
+              <div className="p-2 bg-transparent rounded-lg">
                 <CheckCircle className="w-5 h-5 text-success" />
               </div>
               <div>
@@ -204,7 +204,7 @@ export default function LiveReport() {
           
           <Card className="p-4 card-premium">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-warning/10 rounded-lg">
+              <div className="p-2 bg-transparent rounded-lg">
                 <Clock className="w-5 h-5 text-warning" />
               </div>
               <div>
@@ -216,7 +216,7 @@ export default function LiveReport() {
           
           <Card className="p-4 card-premium">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-destructive/10 rounded-lg">
+              <div className="p-2 bg-transparent rounded-lg">
                 <XCircle className="w-5 h-5 text-destructive" />
               </div>
               <div>

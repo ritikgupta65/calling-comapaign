@@ -412,7 +412,7 @@ export default function Inbound() {
           variant="outline" 
           className={`px-4 py-2 ${
             isReceptionActive 
-              ? "bg-success/10 text-success border-success/20" 
+              ? "bg-transparent text-success border-success/20" 
               : "bg-muted/10 text-muted-foreground border-muted/20"
           }`}
         >
@@ -435,7 +435,7 @@ export default function Inbound() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all-assistants">All Assistants</SelectItem>
-                {allAssistants.map((assistant) => (
+                {inboundAssistants.map((assistant) => (
                   <SelectItem key={assistant.id} value={assistant.id}>
                     {assistant.name}
                   </SelectItem>
@@ -476,8 +476,8 @@ export default function Inbound() {
       {/* Reception Control Panel */}
       <Card className="p-6 card-gradient border-secondary/20">
         <div className="flex items-center space-x-3 mb-6">
-          <div className="p-2 rounded-lg border-2 border-blue-500 bg-blue-500/10">
-            <Headphones className="w-5 h-5 text-blue-500" />
+          <div className="p-2 rounded-lg border border-border bg-white/[.05]">
+            <Headphones className="w-5 h-5 text-muted-foreground" />
           </div>
           <div>
             <h3 className="text-lg font-semibold">Reception Control</h3>
@@ -565,8 +565,8 @@ export default function Inbound() {
                 <Card key={campaign.id} className="p-4 card-premium">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 border-2 border-cyan-500 bg-cyan-500/10 rounded-lg flex items-center justify-center">
-                        <Headphones className="w-5 h-5 text-cyan-500" />
+                      <div className="w-10 h-10 border border-border bg-white/[.05] rounded-lg flex items-center justify-center">
+                      <Headphones className="w-5 h-5 text-muted-foreground" />
                       </div>
                       <div>
                         <p className="font-medium">{campaign.assistant}</p>
@@ -579,9 +579,9 @@ export default function Inbound() {
                         variant="outline" 
                         className={
                           isReceptionActive && campaignStates[campaign.id]?.status !== "paused"
-                            ? "bg-success/10 text-success border-success/20"
+                            ? "bg-transparent text-success border-success/20"
                             : campaignStates[campaign.id]?.status === "paused"
-                            ? "bg-warning/10 text-warning border-warning/20"
+                            ? "bg-transparent text-warning border-warning/20"
                             : "bg-muted/10 text-muted-foreground border-muted/20"
                         }
                       >
@@ -623,7 +623,7 @@ export default function Inbound() {
                       variant="ghost" 
                       size="sm" 
                       onClick={() => handleRemoveCampaign(campaign.id)}
-                      className="btn-professional-ghost text-destructive hover:bg-destructive/10 hover:text-destructive"
+                      className="btn-professional-ghost text-destructive hover:bg-transparent hover:text-destructive"
                     >
                       <X className="w-4 h-4" />
                     </Button>
@@ -666,7 +666,7 @@ export default function Inbound() {
                     variant="outline" 
                     className={
                       call.status === "Completed" 
-                        ? "bg-success/10 text-success border-success/20"
+                        ? "bg-transparent text-success border-success/20"
                         : "bg-primary/10 text-primary border-primary/20"
                     }
                   >

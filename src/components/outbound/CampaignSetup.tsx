@@ -330,7 +330,7 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
         </div>
         
         {campaignsToShow.length > 0 && (
-          <Badge variant="outline" className="status-badge border-success/25 bg-success/10 text-success">
+          <Badge variant="outline" className="status-badge border-success/25 bg-transparent text-success">
             <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
             {campaignsToShow.length} Campaign{campaignsToShow.length > 1 ? 's' : ''}
           </Badge>
@@ -412,17 +412,17 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
             <div className="space-y-2">
               <Label className="text-[13px] font-medium text-foreground/90">AI Assistant</Label>
               <Select value={selectedAssistant} onValueChange={setSelectedAssistant}>
-                <SelectTrigger className="transition-all duration-300">
+                <SelectTrigger className="filter-select-trigger transition-all duration-300">
                   <SelectValue placeholder="Choose an assistant" />
                 </SelectTrigger>
                 <SelectContent>
                   {availableAssistants.map((assistant) => (
                     <SelectItem key={assistant.id} value={assistant.id}>
                       <div className="flex items-center space-x-3">
-                        <Bot className="w-4 h-4 text-primary" />
+                        <Bot className="w-4 h-4 text-muted-foreground" />
                         <div>
                           <p className="font-medium">{assistant.name}</p>
-                          <p className="text-xs text-muted-foreground">{assistant.type} • {assistant.number}</p>
+                          <p className="text-xs text-muted-foreground">{assistant.type}: {assistant.number}</p>
                         </div>
                       </div>
                     </SelectItem>
@@ -514,7 +514,7 @@ export default function CampaignSetup({ onCampaignStart, activeCampaign }: Campa
                     variant="ghost" 
                     size="sm" 
                     onClick={() => handleRemoveCampaign(campaign.id)}
-                    className="btn-professional-ghost text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    className="btn-professional-ghost text-destructive hover:bg-transparent hover:text-destructive"
                   >
                     <X className="w-4 h-4" />
                   </Button>

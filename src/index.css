@@ -111,7 +111,8 @@
     @apply border border-border bg-transparent text-foreground hover:bg-white/[.05] hover:border-border;
   }
   .filter-select-trigger {
-    @apply border-border bg-input text-foreground;
+    @apply border border-border bg-input text-foreground;
+    border-color: var(--border-strong);
   }
   .text-gradient-primary { @apply text-primary; }
   .font-poppins { font-family: Geist, ui-sans-serif, system-ui, sans-serif; }

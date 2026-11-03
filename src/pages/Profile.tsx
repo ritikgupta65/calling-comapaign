@@ -25,10 +25,10 @@ export default function Profile() {
               <User className="h-5 w-5" />
             </div>
             <div>
-              <p className="font-medium">John Doe</p>
+              <p className="font-medium">Ritik Gupta</p>
               <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
                 <Mail className="h-3.5 w-3.5" />
-                john@company.com
+                guptaritik67856@gmail.com
               </p>
             </div>
           </div>

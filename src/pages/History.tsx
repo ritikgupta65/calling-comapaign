@@ -6,16 +6,19 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import { useNavigate } from "react-router-dom";
+import { useAssistants } from "@/lib/assistants";
 
 export default function History() {
   const navigate = useNavigate();
   const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
+  const { assistants } = useAssistants("outbound");
+  const assistantName = (index: number) => assistants[index % assistants.length]?.name ?? "No assistant available";
 
   const outboundCampaigns = [
     {
       id: "1",
       name: "Q4 Lead Generation",
-      assistant: "Sales Assistant Pro",
+      assistant: assistantName(0),
       type: "outbound",
       status: "completed",
       totalCalls: 1250,
@@ -25,7 +28,7 @@ export default function History() {
     {
       id: "2", 
       name: "Holiday Promotions",
-      assistant: "Customer Support",
+      assistant: assistantName(1),
       type: "outbound",
       status: "active",
       totalCalls: 856,
@@ -38,7 +41,7 @@ export default function History() {
     {
       id: "3",
       name: "Customer Support Line",
-      assistant: "Customer Support Pro",
+      assistant: assistantName(2),
       type: "inbound",
       status: "active",
       totalCalls: 342,
@@ -48,7 +51,7 @@ export default function History() {
     {
       id: "4",
       name: "Sales Inquiries",
-      assistant: "Sales Assistant",
+      assistant: assistantName(3),
       type: "inbound", 
       status: "completed",
       totalCalls: 167,
@@ -61,7 +64,7 @@ export default function History() {
     {
       id: "1",
       number: "+1 (555) 123-4567",
-      assistantName: "Sales Assistant Pro",
+      assistantName: assistantName(0),
       endReason: "Call Completed",
       successEvaluation: "Success",
       startTime: "2024-02-09 14:30:22",
@@ -71,7 +74,7 @@ export default function History() {
     {
       id: "2",
       number: "+1 (555) 987-6543", 
-      assistantName: "Sales Assistant Pro",
+      assistantName: assistantName(0),
       endReason: "Voicemail",
       successEvaluation: "No Answer",
       startTime: "2024-02-09 14:25:15",
@@ -81,7 +84,7 @@ export default function History() {
     {
       id: "3",
       number: "+1 (555) 456-7890",
-      assistantName: "Sales Assistant Pro", 
+      assistantName: assistantName(0), 
       endReason: "Call Declined",
       successEvaluation: "Failed",
       startTime: "2024-02-09 14:20:08",
@@ -91,7 +94,7 @@ export default function History() {
     {
       id: "4",
       number: "+1 (555) 234-5678",
-      assistantName: "Sales Assistant Pro",
+      assistantName: assistantName(0),
       endReason: "Call Completed",
       successEvaluation: "Success",
       startTime: "2024-02-09 14:15:33",
@@ -101,7 +104,7 @@ export default function History() {
     {
       id: "5",
       number: "+1 (555) 345-6789",
-      assistantName: "Sales Assistant Pro",
+      assistantName: assistantName(0),
       endReason: "Busy Signal",
       successEvaluation: "No Answer",
       startTime: "2024-02-09 14:10:41",
@@ -122,7 +125,7 @@ export default function History() {
 
   const getStatusBadge = (status: string) => {
     return status === "active" ? (
-      <Badge variant="outline" className="bg-success/10 text-success border-success/20">
+      <Badge variant="outline" className="bg-transparent text-success border-success/20">
         Active
       </Badge>
     ) : (
@@ -206,7 +209,7 @@ export default function History() {
                       </td>
                       <td className="py-4 px-6">
                         <div className="flex items-center space-x-3">
-                          <User className="w-4 h-4 text-primary" />
+                          <User className="w-4 h-4 text-muted-foreground" />
                           <span>{call.assistantName}</span>
                         </div>
                       </td>
@@ -247,6 +250,15 @@ export default function History() {
       {/* Header */}
       <div className="flex flex-col items-start justify-between gap-5 lg:flex-row lg:items-center">
         <div className="space-y-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate(-1)}
+            className="gap-2 px-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Button>
           <h2 className="text-[22px] font-semibold tracking-tight text-foreground">
             Campaign History
           </h2>
